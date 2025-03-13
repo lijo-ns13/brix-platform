@@ -1,5 +1,6 @@
+// usermodel
 import mongoose,{Document,Schema,ObjectId} from "mongoose";
-
+import bcrypt from 'bcrypt'
 
 export interface IUser extends Document {
     _id:ObjectId;
@@ -16,6 +17,7 @@ export interface IUser extends Document {
     headline?:string;
     about?:string;
     isBlocked:boolean;
+    isVerified:boolean,
     createdAt?:Date;
     updatedAt?:Date
 }
@@ -36,6 +38,7 @@ const userSchema=new Schema<IUser>({
     password:{
         type:String,
         required:true,
+        select:false
     },
     profilePicture:{
         type:String,
@@ -69,6 +72,10 @@ const userSchema=new Schema<IUser>({
             ref:"Project"
         }
     ],
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
     connections:[
         {
             type:mongoose.Schema.Types.ObjectId,
@@ -94,5 +101,21 @@ const userSchema=new Schema<IUser>({
     timestamps:true
 }
 )
+userSchema.pre('save', async function (next) {
+    const user = this;
+  
+    if (!user.isModified('password')) {
+      return next();
+    }
+  
+    try {
+      const saltRounds = 10; // recommended
+      user.password = await bcrypt.hash(user.password, saltRounds);
+      next();
+    } catch (err) {
+      next(err as Error);
+    }
+  });
+  
 
 export default mongoose.model<IUser>("User",userSchema);
