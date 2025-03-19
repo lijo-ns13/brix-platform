@@ -118,6 +118,6 @@
     "noUnusedParameters": true
 
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/createAdmin.ts"],
   "exclude": ["node_modules", "dist"]
 }
