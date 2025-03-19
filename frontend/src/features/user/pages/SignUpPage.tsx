@@ -115,9 +115,7 @@ function SignUpPage() {
       navigate(`/verify-otp/?email=${signUpState.email}`);
     } catch (error: any) {
       console.log("errors in signup", error);
-      setServerError(
-        error?.response?.data?.error || "An unexpected error occurred."
-      );
+      setServerError(error || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }

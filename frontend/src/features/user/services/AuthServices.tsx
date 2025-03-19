@@ -1,69 +1,106 @@
 import axios from "axios";
+const BASE_URL = "http://localhost:3000/auth";
+export const SignInUser = async (email: string, password: string) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/signin`,
+      { email, password },
+      {
+        withCredentials: true,
+      }
+    );
+    const { accessToken, role, user } = response.data;
 
+    console.log("Access Token:", accessToken);
+    console.log("User:", user);
+    console.log("Role:", role);
 
-export const SignInUser = async (email:string,password:string) => {
-    try {
-        const response= await axios.post('http://localhost:3000/auth/signin',{email,password},{
-            withCredentials:true
-        })
-        const {accessToken,role,user}=response.data;
-        
-        console.log("Access Token:", accessToken);
-        console.log("User:", user);
-        console.log("Role:", role);
+    return response.data;
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
+  }
+};
+export const SignUpUser = async (
+  name: string,
+  email: string,
+  password: string,
+  confirmPassword: string
+) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/signup`,
+      { name, email, password, confirmPassword },
+      { withCredentials: true }
+    );
 
-        return { accessToken, user, role };
-    } catch (error) {
-        console.log('error',error);
-        throw error;
-    }
+    return response.data;
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
+  }
+};
+export const verifyUserByOTP = async (email: string | null, otp: string) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/verify`,
+      { email, otp },
+      {
+        withCredentials: true,
+      }
+    );
 
-}
-export const SignUpUser = async (name:string,email:string,password:string,confirmPassword:string) => {
-    try {
-        const response=await axios.post('http://localhost:3000/auth/signup',{name,email,password,confirmPassword},
-            {withCredentials:true}
-        )
-        const {success}=response.data;
-        if(!success){
-            alert('failed');
-            return;
-        }
-        alert('success signup')
-    } catch (error) {
-        console.log('error in serviced',error);
-        throw error;
-    }
-}
-export const verifyUserByOTP=async (email:string|null,otp:string) => {
-    try {
-        const response=await axios.post('http://localhost:3000/auth/verify',{email,otp},{
-            withCredentials:true
-        })
-        const {success}=response.data;
-        if(!success){
-            alert('failed')
-            return;
-        }
-        alert('success')
-    } catch (error) {
-        console.log('error in serviced',error);
-        throw error;
-    }
-}
-export const resendOTP=async (email:string|null)=> {
-    try {
-        const response=await axios.post('http://localhost:3000/auth/resend',{email},{
-            withCredentials:true
-        });
-        const {success}=response.data;
-        if(!success){
-            alert('failed');
-            return;
-        }
-        alert('success');
-    } catch (error) {
-        console.log('errorin resned',error);
-        throw error;
-    }
-}
+    return response.data;
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
+  }
+};
+export const resendOTP = async (email: string | null) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/resend`,
+      { email },
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
+  }
+};
+export const forgetPasswordByEmail = async (email: string | null) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/forget-password`,
+      { email },
+      {
+        withCredentials: true,
+      }
+    );
+    // respnse =>token message success
+    return response.data;
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
+  }
+};
+export const resetPassword = async (
+  token: string,
+  password: string,
+  confirmPassword: string
+) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/reset-password`,
+      { token, password, confirmPassword },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
+  }
+};

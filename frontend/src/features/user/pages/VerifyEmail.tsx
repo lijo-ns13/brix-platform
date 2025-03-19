@@ -80,7 +80,7 @@ function VerifyEmail() {
       setIsResendAllowed(false);
     } catch (error: any) {
       console.error("Failed to resend OTP:", error);
-      alert(error?.response?.data?.message || "Failed to resend OTP");
+      alert(error || "Failed to resend OTP");
     } finally {
       setIsResending(false);
     }

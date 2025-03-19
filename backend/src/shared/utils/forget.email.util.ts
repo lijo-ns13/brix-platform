@@ -4,7 +4,7 @@ export const sendPasswordResetEmail = async (
   email: string,
   token: string
 ): Promise<void> => {
-  const resetURL = `https://yourfrontend.com/reset-password?token=${token}`;
+  const resetURL = `http://localhost:5173/reset-password?token=${token}`;
 
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",

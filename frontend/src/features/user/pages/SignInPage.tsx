@@ -55,9 +55,7 @@ function SignInPage() {
       navigate("/feed");
     } catch (err: any) {
       console.error("API Error:", err);
-      setServerError(
-        err?.response?.data?.error || "An unexpected error occurred."
-      );
+      setServerError(err || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -220,7 +218,7 @@ function SignInPage() {
 
             <div className="text-sm">
               <a
-                href="#"
+                href="/forget-password"
                 className="font-medium text-black hover:text-gray-800"
               >
                 Forgot your password?
@@ -276,7 +274,7 @@ function SignInPage() {
           <div className="mt-6 grid grid-cols-2 gap-3">
             <div>
               <a
-                href="#"
+                href="google#"
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200"
               >
                 <svg
@@ -291,7 +289,7 @@ function SignInPage() {
 
             <div>
               <a
-                href="#"
+                href="git#"
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200"
               >
                 <svg

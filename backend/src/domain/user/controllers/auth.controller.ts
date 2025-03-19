@@ -141,7 +141,7 @@ export class UserController {
       res.status(200).json({
         success: true,
         message: "Password reset token has been sent to your email.",
-        rawToken: result.rawToken,
+        token: result.rawToken,
       });
     } catch (error: any) {
       res.status(400).json({ success: false, error: error.message });
