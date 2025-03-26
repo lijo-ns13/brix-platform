@@ -6,6 +6,9 @@ import SignIn from "../features/admin/pages/SignIn";
 import Dashboard from "../features/admin/pages/Dashboard";
 import AdminLayout from "../layouts/AdminLayout";
 import Protected from "./Protected";
+import UserManagement from "../features/admin/pages/UserManagement";
+import CompanyManagement from "../features/admin/pages/CompanyManagement";
+import CompanyVerificationPage from "../features/admin/pages/CompanyVerification";
 
 const AdminRoutes = () => {
   return (
@@ -21,6 +24,12 @@ const AdminRoutes = () => {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/user-management" element={<UserManagement />} />
+        <Route path="/company-management" element={<CompanyManagement />} />
+        <Route
+          path="/company-verification"
+          element={<CompanyVerificationPage />}
+        />
       </Route>
     </Routes>
   );

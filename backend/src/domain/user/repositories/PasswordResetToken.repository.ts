@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import PasswordResetToken, {
   IPasswordResetToken,
-} from "../../../shared/models/passwordResetToken";
+} from "../../../shared/models/PasswordResetToken";
 import { CreatePasswordResetTokenDto } from "../dtos/forget-password/createPasswordResetToken.dto";
 
 export class PasswordResetTokenRepository {

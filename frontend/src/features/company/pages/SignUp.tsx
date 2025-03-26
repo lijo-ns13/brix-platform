@@ -92,9 +92,6 @@ function SignUp() {
         formData.location,
         formData.confirmPassword
       );
-      alert("success");
-      // After successful signup
-      alert("success");
       setCompanyName("");
       setEmail("");
       setAbout("");
@@ -124,7 +121,19 @@ function SignUp() {
         <h1 className="text-2xl font-bold mb-6 text-center">
           Company Signup{serverError && <p>serverError</p>}
         </h1>
+        <p className="mt-2 text-sm text-gray-600">
+          Or{" "}
+          <a
+            href="/company/signin"
+            className="font-medium text-black hover:text-gray-800"
+          >
+            Already have a company account
+          </a>
+        </p>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Enter Company Name
+          </label>
           <input
             name="companyName"
             placeholder="Company Name"
@@ -135,7 +144,9 @@ function SignUp() {
           {errors.companyName && (
             <p className="text-red-500 text-sm">{errors.companyName}</p>
           )}
-
+          <label className="block text-sm font-medium text-gray-700">
+            Enter email
+          </label>
           <input
             name="email"
             placeholder="Enter your Email"
@@ -146,7 +157,9 @@ function SignUp() {
           {errors.email && (
             <p className="text-red-500 text-sm">{errors.email}</p>
           )}
-
+          <label className="block text-sm font-medium text-gray-700">
+            Enter about
+          </label>
           <input
             name="about"
             placeholder="About your company"
@@ -157,7 +170,9 @@ function SignUp() {
           {errors.about && (
             <p className="text-red-500 text-sm">{errors.about}</p>
           )}
-
+          <label className="block text-sm font-medium text-gray-700">
+            Enter founded year
+          </label>
           <input
             name="foundedYear"
             type="number"
@@ -169,7 +184,9 @@ function SignUp() {
           {errors.foundedYear && (
             <p className="text-red-500 text-sm">{errors.foundedYear}</p>
           )}
-
+          <label className="block text-sm font-medium text-gray-700">
+            Enter business number
+          </label>
           <input
             name="businessNumber"
             type="number"
@@ -181,7 +198,9 @@ function SignUp() {
           {errors.businessNumber && (
             <p className="text-red-500 text-sm">{errors.businessNumber}</p>
           )}
-
+          <label className="block text-sm font-medium text-gray-700">
+            Select Industry Type
+          </label>
           {/* INDUSTRY DROPDOWN */}
           <select
             name="industryType"
@@ -199,7 +218,9 @@ function SignUp() {
           {errors.industryType && (
             <p className="text-red-500 text-sm">{errors.industryType}</p>
           )}
-
+          <label className="block text-sm font-medium text-gray-700">
+            Enter Location
+          </label>
           <input
             name="location"
             placeholder="Location"
@@ -212,7 +233,9 @@ function SignUp() {
           )}
 
           {/* File Input */}
-          <label>documents</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Enter documents
+          </label>
           <input
             type="file"
             name="documents"
@@ -244,7 +267,9 @@ function SignUp() {
               </div>
             ))}
           </div>
-
+          <label className="block text-sm font-medium text-gray-700">
+            Enter password
+          </label>
           <input
             type="password"
             name="password"
@@ -256,7 +281,9 @@ function SignUp() {
           {errors.password && (
             <p className="text-red-500 text-sm">{errors.password}</p>
           )}
-
+          <label className="block text-sm font-medium text-gray-700">
+            Enter Confirm Password
+          </label>
           <input
             type="password"
             name="confirmPassword"

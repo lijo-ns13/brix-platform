@@ -9,12 +9,12 @@ export const SignInUser = async (email: string, password: string) => {
         withCredentials: true,
       }
     );
-    const { accessToken, role, user } = response.data;
+    const { role, user, isVerified, isBlocked } = response.data;
 
-    console.log("Access Token:", accessToken);
     console.log("User:", user);
     console.log("Role:", role);
-
+    console.log("isVeried:", isVerified);
+    console.log("isBlcoked:", isBlocked);
     return response.data;
   } catch (error: any) {
     console.error("API Error:", error);
@@ -101,6 +101,17 @@ export const resetPassword = async (
     return response.data;
   } catch (error: any) {
     console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
+  }
+};
+export const logOut = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/logout`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.log("API ERror", error);
     throw error?.response?.data?.error || "Something went wrong";
   }
 };

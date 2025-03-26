@@ -19,9 +19,10 @@ const CompanyRoutes = () => {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/verify" element={<VerifyEmail />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
+
       <Route
         element={
-          <Protected SpecificRole="company" redirectPath="/company/sigin">
+          <Protected SpecificRole="company" redirectPath="/company/signin">
             <CompanyLayout />
           </Protected>
         }

@@ -55,7 +55,7 @@ function VerifyEmail() {
       const res = await verifyCompanyByOTP(email!, otp);
       console.log("Verification success:", res);
       alert("Email verified successfully!");
-      navigate("/signin");
+      navigate("/company/signin");
     } catch (error: any) {
       console.error("Verification failed:", error);
       alert(error?.response?.data?.message || "Failed to verify OTP");

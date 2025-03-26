@@ -9,13 +9,10 @@ export const SignInAdmin = async (email: string, password: string) => {
         withCredentials: true,
       }
     );
-    const { accessToken, role, user } = (await result).data;
-    return { accessToken, role, user };
+    const { isVerified, isBlocked, role, user } = (await result).data;
+    return { isVerified, isBlocked, role, user };
   } catch (error: any) {
-    console.log("error in admin signin", error);
-    const message =
-      error.response?.data?.message || "An error occurred during admin signin.";
-    console.error("Signin error:", message);
-    throw new Error(message);
+    console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
   }
 };

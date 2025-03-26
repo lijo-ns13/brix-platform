@@ -56,6 +56,7 @@ export interface ICompany extends Document {
   documents: string[];
   isVerified: boolean;
   verificationStatus: "pending" | "accepted" | "rejected";
+  isBlocked: boolean;
 }
 
 const companySchema = new Schema<ICompany>(
@@ -108,6 +109,10 @@ const companySchema = new Schema<ICompany>(
       type: Boolean,
       default: false,
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
     verificationStatus: {
       type: String,
       enum: ["pending", "accepted", "rejected"],
@@ -126,7 +131,7 @@ companySchema.pre("save", async function (next) {
   }
 
   try {
-    const saltRounds = 10; // recommended
+    const saltRounds = 10;
     // ✅ Skip if already hashed (check password length or bcrypt hash pattern)
     if (user.password && user.password.startsWith("$2b$")) {
       return next(); // already hashed, no need to rehash

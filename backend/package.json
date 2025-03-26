@@ -15,6 +15,7 @@
   "author": "lijo ns",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
@@ -22,11 +23,14 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "google-auth-library": "^9.15.1",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1",
     "morgan": "^1.10.0",
     "nodemailer": "^6.10.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -42,6 +46,8 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.10",
     "@types/nodemailer": "^6.4.17",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.16",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "eslint": "^9.22.0",

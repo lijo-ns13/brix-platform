@@ -1,11 +1,13 @@
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
+import { Navigate } from "react-router-dom";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { useAppSelector } from "../hooks/useAppSelector";
 import { JSX } from "react";
-import { isExpired } from "../utils/auth";
+import { logout } from "../features/auth/auth.slice";
+import toast from "react-hot-toast";
 
 interface ProtectedRouteProps {
   children: JSX.Element;
-  SpecificRole: "admin" | "company" | "user";
+  SpecificRole: "user" | "company" | "admin";
   redirectPath: string;
 }
 
@@ -14,20 +16,32 @@ const Protected = ({
   SpecificRole,
   redirectPath,
 }: ProtectedRouteProps) => {
-  const { role, accessToken, logout } = useAuthStore();
-  const location = useLocation();
+  const dispatch = useAppDispatch();
 
-  const tokenExpired = isExpired(accessToken);
-
-  if (tokenExpired) {
-    logout(); // Clear auth state
-    return <Navigate to={redirectPath} state={{ from: location }} replace />;
+  // Use useSelector to get the auth state from the Redux store
+  const { isAuthenticated, role, isVerified, isBlocked } = useAppSelector(
+    (state) => state.auth
+  );
+  if (isBlocked) {
+    toast.success("user is blocked");
+    dispatch(logout());
+    return <Navigate to={redirectPath} />;
+  }
+  if (role == "company" && !isVerified) {
+    dispatch(logout());
+    return <Navigate to={"/locked-dashboard"} />;
+  }
+  if (!isAuthenticated) {
+    dispatch(logout());
+    return <Navigate to={redirectPath} />;
+  }
+  // If the user's role does not match the required role, redirect to the specified path
+  if (role !== SpecificRole) {
+    dispatch(logout());
+    return <Navigate to={redirectPath} />;
   }
 
-  if (!role || role !== SpecificRole) {
-    return <Navigate to={redirectPath} state={{ from: location }} replace />;
-  }
-
+  // If the user is authenticated and has the correct role, render the children
   return children;
 };
 

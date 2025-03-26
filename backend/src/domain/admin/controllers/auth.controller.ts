@@ -2,7 +2,7 @@ import { Request, RequestHandler, Response } from "express";
 import { AdminAuthRepository } from "../repositories/admin.auth.repository";
 import { AdminAuthService } from "../services/auth.service";
 import { ZodError } from "zod";
-
+import { HTTP_STATUS_CODES } from "../../../shared/constants/httpStatusCode";
 export class AuthController {
   private adminAuthService: AdminAuthService;
 
@@ -20,12 +20,19 @@ export class AuthController {
         sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
-      res.status(200).json({
+      res.cookie("accessToken", result.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      res.status(HTTP_STATUS_CODES.OK).json({
         success: true,
         message: "admin signin successsfully",
-        accessToken: result.accessToken,
         role: "admin",
         user: { name: result.name, email: result.email },
+        isVerified: true,
+        isBlocked: false,
       });
     } catch (error: any) {
       if (error instanceof ZodError) {
@@ -33,10 +40,14 @@ export class AuthController {
         error.errors.forEach((err) => {
           errObj[err.path.join(".")] = err.message;
         });
-        res.status(400).json({ success: false, errors: errObj });
+        res
+          .status(HTTP_STATUS_CODES.BAD_REQUEST)
+          .json({ success: false, errors: errObj });
         return;
       }
-      res.status(400).json({ success: false, error: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ success: false, error: error.message });
     }
   };
 }

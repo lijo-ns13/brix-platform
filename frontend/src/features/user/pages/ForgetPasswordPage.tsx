@@ -49,7 +49,7 @@ function ForgetPasswordPage() {
       setShowSuccess(true);
       setTimeout(() => {
         navigate("/login");
-      }, 10000);
+      }, 1000);
     } catch (err: any) {
       console.error("Error in forgetPassword:", err);
       setServerError(err || "An unexpected error occurred.");

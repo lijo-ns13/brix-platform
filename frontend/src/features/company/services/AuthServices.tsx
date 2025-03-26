@@ -56,19 +56,16 @@ export const signInCompany = async (email: string, password: string) => {
       { withCredentials: true }
     );
 
-    const { success, accessToken, role, company } = response.data;
+    // const { success, role, company,isVerified,isBlcoked } = response.data;
 
-    if (!success) {
-      alert("Signin failed");
-      return;
-    }
-    return { accessToken, role, user: company };
+    // if (!success) {
+    //   alert("Signin failed");
+    //   return;
+    // }
+    return response.data;
   } catch (error: any) {
-    const message =
-      error.response?.data?.message ||
-      "An error occurred during company signin.";
-    console.error("Signin error:", message);
-    throw new Error(message);
+    console.error("API Error:", error);
+    throw error?.response?.data?.error || "Something went wrong";
   }
 };
 export const verifyCompanyByOTP = async (email: string | null, otp: string) => {

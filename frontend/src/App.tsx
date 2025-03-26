@@ -3,6 +3,7 @@ import UserRoutes from "./routes/UserRoutes";
 import CompanyRoutes from "./routes/CompanyRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LockedDashboard from "./features/company/pages/LockedDashboard";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         {/* companyroutes */}
         <Route path="/company/*" element={<CompanyRoutes />} />
         <Route path="/admin/*" element={<AdminRoutes />} />
+        <Route path="/locked-dashboard" element={<LockedDashboard />} />
         <Route path="*" element={<h1>not found</h1>} />
       </Routes>
     </BrowserRouter>

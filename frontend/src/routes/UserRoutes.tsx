@@ -9,6 +9,7 @@ import VerifyEmail from "../features/user/pages/VerifyEmail";
 // protected pages
 import FeedPage from "../features/user/pages/FeedPage";
 import Protected from "./Protected";
+import OAuthSuccessPage from "../features/user/pages/OAuthSuccess";
 const UserRoutes = () => {
   // get user role  from store here this
   return (
@@ -19,10 +20,12 @@ const UserRoutes = () => {
       <Route path="verify-otp" element={<VerifyEmail />} />
       <Route path="forget-password" element={<ForgetPasswordPage />} />
       <Route path="reset-password" element={<ResetPasswordPage />} />
+      <Route path="/oauth-success" element={<OAuthSuccessPage />} />
+
       {/* Protected + user layout */}
       <Route
         element={
-          <Protected SpecificRole="user" redirectPath="/signin">
+          <Protected SpecificRole="user" redirectPath="/login">
             <UserLayout />
           </Protected>
         }

@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../../../store/authStore";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { logout } from "../../auth/auth.slice";
+import { logOut } from "../../user/services/AuthServices";
 
 const Navbar = () => {
-  const { logout } = useAuthStore();
+  const dispatch = useAppDispatch();
 
-  const handleLogout = async () => {
-    await logout();
-    alert("Admin logged out successfully");
-  };
+  async function handleLogout() {
+    await logOut();
+    dispatch(logout());
+    alert("Logged out successfully");
+  }
 
   return (
     <nav className="bg-indigo-800 text-white shadow-lg">

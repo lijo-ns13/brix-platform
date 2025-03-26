@@ -6,7 +6,7 @@ export interface IUser extends Document {
   _id: Types.ObjectId;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   profilePicture?: string;
   skills: string[] | [];
   certifications: mongoose.Types.ObjectId[] | [];
@@ -19,10 +19,13 @@ export interface IUser extends Document {
   isBlocked: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  googleId?: string;
+  isVerified: boolean;
 }
 
 const userSchema = new Schema<IUser>(
   {
+    googleId: { type: String, unique: true, sparse: true },
     name: {
       type: String,
       required: true,
@@ -37,7 +40,6 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: true,
       select: false,
     },
     profilePicture: {
@@ -92,6 +94,10 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    isVerified: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
@@ -99,7 +105,10 @@ const userSchema = new Schema<IUser>(
 );
 userSchema.pre("save", async function (next) {
   const user = this;
-
+  // ✅ If there is no password, skip hashing
+  if (!user.password) {
+    return next();
+  }
   if (!user.isModified("password")) {
     return next();
   }

@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SignInAdmin } from "../services/AuthServices";
 import { z } from "zod";
-import { useAuthStore } from "../../../store/authStore";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
+import { login } from "../../auth/auth.slice";
 function SignInPage() {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/admin/dashboard");
+    }
+  }, []);
   const navigate = useNavigate();
-  const { login } = useAuthStore();
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
@@ -50,17 +58,24 @@ function SignInPage() {
     try {
       const res = await SignInAdmin(email, password);
       console.log("Success:", res);
-      if (!res || !res.accessToken || !res.role || !res.user) {
+      if (!res || !res.role || !res.user) {
         throw new Error("Invalid response from the server");
       }
-      const { user, accessToken, role } = res;
-      await login({ user, accessToken, role });
+      const { user, role, isBlocked, isVerified } = res;
+      dispatch(
+        login({
+          name: user.name, // Ensure these fields are returned by SignInUser
+          email: user.email,
+          role: role,
+          profileImage: "", // Adjust based on your API response,
+          isBlocked: isBlocked,
+          isVerified: isVerified,
+        })
+      );
       navigate("/admin/dashboard");
     } catch (err: any) {
       console.error("API Error:", err);
-      setServerError(
-        err?.response?.data?.error || "An unexpected error occurred."
-      );
+      setServerError(err || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { z } from "zod";
 import { resetPassword } from "../services/AuthServices";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 export const resetSchema = z
   .object({
     password: z

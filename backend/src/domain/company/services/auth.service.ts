@@ -2,7 +2,7 @@
 import { CompanyRepository } from "../repositories/company.repositary";
 import bcrypt from "bcrypt";
 import { JWTService } from "../../../shared/services/jwt.service";
-import { OTPRepositary } from "../../user/repositories/otp.repository";
+import { OTPRepository } from "../../user/repositories/otp.repository";
 import { TempCompanyRepositary } from "../repositories/temp.company.repositary";
 import { SignUpCompanyRequestDTO } from "../dtos/auth/company.signup.dto";
 import {
@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     private companyRepository: CompanyRepository,
     private tempCompanyRepository: TempCompanyRepositary,
-    private otpRepository: OTPRepositary
+    private otpRepository: OTPRepository
   ) {}
 
   async signUp(payload: SignUpCompanyRequestDTO): Promise<any> {
@@ -63,15 +63,19 @@ export class AuthService {
     const companyAccessToken = JWTService.generateAccessToken("company", {
       id: company._id.toString(),
       email: company.email,
+      role: "company",
     });
     const companyRefreshToken = JWTService.generateRefreshToken("company", {
       id: company._id.toString(),
       email: company.email,
+      role: "company",
     });
     return {
       accessToken: companyAccessToken,
       refreshToken: companyRefreshToken,
       company: company,
+      isVerified: company.isVerified,
+      isBlocked: company.isBlocked,
     };
   }
   async verifyOTP(

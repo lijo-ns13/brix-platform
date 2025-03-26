@@ -136,7 +136,7 @@ function SignUpPage() {
           <p className="mt-2 text-sm text-gray-600">
             Or{" "}
             <a
-              href="/signin"
+              href="/login"
               className="font-medium text-black hover:text-gray-800"
             >
               sign in to your existing account
