@@ -1,38 +1,35 @@
 import mongoose, { Document } from "mongoose";
 
-export interface IUserEducation extends Document {
+export interface IUserExperience extends Document {
   _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
-  institutionName: string;
-  degree: string;
-  fieldOfStudy?: string;
-  grade?: string;
+  title?: string;
+  description?: string;
+  company: string;
+  location: string;
   startDate: Date;
   endDate?: Date;
-  description?: string;
-  createdAt?: Date;
-  updateAt?: Date;
 }
 
-const UserEducationSchema = new mongoose.Schema(
+const UserExperienceSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    institutionName: {
+    title: {
       type: String,
       required: true,
     },
-    degree: {
+    company: {
       type: String,
       required: true,
     },
-    fieldOfStudy: {
+    description: {
       type: String,
     },
-    grade: {
+    location: {
       type: String,
     },
     startDate: {
@@ -42,15 +39,14 @@ const UserEducationSchema = new mongoose.Schema(
     endDate: {
       type: String,
       required: false,
-    },
-    description: {
-      type: String,
-      required: false,
-    },
+    }
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model<IUserEducation>("Education", UserEducationSchema);
+export default mongoose.model<IUserExperience>(
+  "Experience",
+  UserExperienceSchema
+);

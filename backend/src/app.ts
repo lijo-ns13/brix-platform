@@ -10,6 +10,7 @@ import userRouter from "./domain/user/routes/user.routes";
 import adminRouter from "./domain/admin/routes/admin.routes";
 import companyRouter from "./domain/company/routes/company.routes";
 import googleRouter from "./domain/user/routes/google.route";
+
 dotenv.config();
 
 const app: Application = express();
@@ -34,6 +35,10 @@ app.use("/", userRouter); //userrouter
 app.use("/admin", adminRouter); //adminrouter
 app.use("/company", companyRouter); //companyrouter
 app.use("/api/auth", googleRouter);
+// In app.ts:
+import userProfileRouter from "./domain/user/routes/user.profile.routes";
+app.use("/user-profile", userProfileRouter);
+
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({
     message: err.message || "something wrong",

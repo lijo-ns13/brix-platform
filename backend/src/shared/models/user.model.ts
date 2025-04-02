@@ -10,9 +10,9 @@ export interface IUser extends Document {
   profilePicture?: string;
   skills: string[] | [];
   certifications: mongoose.Types.ObjectId[] | [];
-  experience: mongoose.Types.ObjectId[] | [];
-  education: mongoose.Types.ObjectId[] | [];
-  projectCollection: mongoose.Types.ObjectId[] | [];
+  experiences: mongoose.Types.ObjectId[] | [];
+  educations: mongoose.Types.ObjectId[] | [];
+  projects: mongoose.Types.ObjectId[] | [];
   connections: mongoose.Types.ObjectId[] | [];
   headline?: string;
   about?: string;
@@ -56,19 +56,19 @@ const userSchema = new Schema<IUser>(
         ref: "Certificate",
       },
     ],
-    experience: [
+    experiences: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Experience",
       },
     ],
-    education: [
+    educations: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Education",
       },
     ],
-    projectCollection: [
+    projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Project",

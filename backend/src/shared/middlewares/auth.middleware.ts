@@ -65,14 +65,13 @@ export const authenticate = (role: "user" | "admin" | "company") => {
         decodedAccess = JWTService.verifyAccessToken(role, newAccessToken);
       }
 
-      req.user = decodedAccess;
       next();
     } catch (error) {
       console.error("Auth Middleware Error:", error);
       res
         .status(HTTP_STATUS_CODES.UNAUTHORIZED)
         .json({ message: "Unauthorized" });
-      return; // ❗ Stop after response, no need to `return res`
+      return;
     }
   };
 };
