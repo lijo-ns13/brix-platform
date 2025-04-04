@@ -115,8 +115,11 @@
     "strictPropertyInitialization": true ,// Ensures classes initialize all fields
                                /* Skip type checking all .d.ts files. */
     "noUnusedLocals": true,
-    "noUnusedParameters": true
-
+    "noUnusedParameters": true,
+"typeRoots": ["./node_modules/@types", "./src/types"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*", "src/createAdmin.ts"],
   "exclude": ["node_modules", "dist"]

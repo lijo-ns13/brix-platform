@@ -10,6 +10,7 @@ import VerifyEmail from "../features/user/pages/VerifyEmail";
 import FeedPage from "../features/user/pages/FeedPage";
 import Protected from "./Protected";
 import OAuthSuccessPage from "../features/user/pages/OAuthSuccess";
+import ProfilePage from "../features/user/pages/ProfilePage";
 const UserRoutes = () => {
   // get user role  from store here this
   return (
@@ -33,6 +34,15 @@ const UserRoutes = () => {
         {/* we can write other user routes like dahsboard,profeliall proetected */}
         <Route path="feed" element={<FeedPage />} />
       </Route>
+      {/* Protected + no user layout */}
+      <Route
+        path="user-profile"
+        element={
+          <Protected SpecificRole="user" redirectPath="/login">
+            <ProfilePage />
+          </Protected>
+        }
+      ></Route>
     </Routes>
   );
 };

@@ -35,7 +35,7 @@ app.use("/", userRouter); //userrouter
 app.use("/admin", adminRouter); //adminrouter
 app.use("/company", companyRouter); //companyrouter
 app.use("/api/auth", googleRouter);
-// In app.ts:
+
 import userProfileRouter from "./domain/user/routes/user.profile.routes";
 app.use("/user-profile", userProfileRouter);
 

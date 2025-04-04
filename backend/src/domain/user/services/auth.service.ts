@@ -87,7 +87,7 @@ export class AuthService {
     return {
       accessToken: userAccessToken,
       refreshToken: userRefreshToken,
-      user: { name: user.name, email: user.email },
+      user: { name: user.name, email: user.email, id: user._id },
       isVerified: user.isVerified,
       isBlocked: user.isBlocked,
     };

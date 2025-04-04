@@ -63,7 +63,17 @@ export class UserProfileController {
       res.status(400).json({ message: error.message });
     }
   }
-
+  async editEducation(req: Request, res: Response) {
+    try {
+      const updatedEducation = await this.userProfileService.editEducation(
+        req.params.educationId,
+        req.body as Partial<IUserEducation>
+      );
+      res.json(updatedEducation);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
   async deleteEducation(req: Request, res: Response) {
     try {
       await this.userProfileService.deleteEducation(
@@ -87,7 +97,17 @@ export class UserProfileController {
       res.status(400).json({ message: error.message });
     }
   }
-
+  async editExperience(req: Request, res: Response) {
+    try {
+      const updatedExperience = await this.userProfileService.editExperience(
+        req.params.experienceId,
+        req.body as Partial<IUserExperience>
+      );
+      res.json(updatedExperience);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
   async deleteExperience(req: Request, res: Response) {
     try {
       await this.userProfileService.deleteExperience(
@@ -111,7 +131,17 @@ export class UserProfileController {
       res.status(400).json({ message: error.message });
     }
   }
-
+  async editProject(req: Request, res: Response) {
+    try {
+      const updatedProject = await this.userProfileService.editProject(
+        req.params.projectId,
+        req.body as Partial<IUserProject>
+      );
+      res.json(updatedProject);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
   async deleteProject(req: Request, res: Response) {
     try {
       await this.userProfileService.deleteProject(
@@ -135,7 +165,17 @@ export class UserProfileController {
       res.status(400).json({ message: error.message });
     }
   }
-
+  async editCertificate(req: Request, res: Response) {
+    try {
+      const updatedCertificate = await this.userProfileService.editCertificate(
+        req.params.certificateId,
+        req.body as Partial<IUserCertificate>
+      );
+      res.json(updatedCertificate);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
   async deleteCertificate(req: Request, res: Response) {
     try {
       await this.userProfileService.deleteCertificate(

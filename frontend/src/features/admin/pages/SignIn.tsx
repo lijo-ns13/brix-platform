@@ -64,6 +64,7 @@ function SignInPage() {
       const { user, role, isBlocked, isVerified } = res;
       dispatch(
         login({
+          id: user.id,
           name: user.name, // Ensure these fields are returned by SignInUser
           email: user.email,
           role: role,

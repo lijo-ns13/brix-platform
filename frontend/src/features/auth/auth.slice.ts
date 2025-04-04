@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // Define the shape of your state
 interface AuthState {
   isAuthenticated: boolean;
+  id: string;
   name: string;
   email: string;
   role: string;
@@ -13,6 +14,7 @@ interface AuthState {
 
 const initialState: AuthState = {
   isAuthenticated: false,
+  id: "",
   name: "",
   email: "",
   role: "",
@@ -28,6 +30,7 @@ const authSlice = createSlice({
     login: (
       state,
       action: PayloadAction<{
+        id: string;
         name: string;
         email: string;
         role: string;
@@ -37,6 +40,7 @@ const authSlice = createSlice({
       }>
     ) => {
       state.isAuthenticated = true;
+      state.id = action.payload.id;
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.role = action.payload.role;
@@ -46,6 +50,7 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.isAuthenticated = false;
+      state.id = "";
       state.name = "";
       state.email = "";
       state.role = "";

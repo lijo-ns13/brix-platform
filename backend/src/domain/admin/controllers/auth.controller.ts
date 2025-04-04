@@ -30,7 +30,7 @@ export class AuthController {
         success: true,
         message: "admin signin successsfully",
         role: "admin",
-        user: { name: result.name, email: result.email },
+        user: { name: result.name, email: result.email, id: result.id },
         isVerified: true,
         isBlocked: false,
       });
