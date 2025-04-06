@@ -1,9 +1,14 @@
-import userModel, { IUser } from "../../shared/models/user.model";
+// src/types/express/index.d.ts
+export interface IUser {
+  id: string;
+  email: string;
+  role: string;
+}
 declare global {
   namespace Express {
     interface Request {
-      userId?: any; // Optional shorthand
-      user?: any; // Your full user object
+      user?: IUser;
     }
   }
 }
+export {};

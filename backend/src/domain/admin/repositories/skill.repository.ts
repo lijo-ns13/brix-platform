@@ -3,7 +3,7 @@ import { ISkillRepository } from "../interfaces/ISkillRepository";
 export class SkillRepository implements ISkillRepository {
   async create(skill: string): Promise<ISkill> {
     const newSkill = new skillModel({
-      skill,
+      title: skill.toLowerCase(),
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -29,5 +29,8 @@ export class SkillRepository implements ISkillRepository {
 
   async getById(id: string): Promise<ISkill | null> {
     return await skillModel.findById(id);
+  }
+  async getByTitle(title: string): Promise<ISkill | null> {
+    return await skillModel.findOne({ title: title });
   }
 }

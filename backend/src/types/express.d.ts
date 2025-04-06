@@ -1,6 +1,8 @@
-// src/types/express.d.ts
-import { IUser } from "../../shared/models/user.model";
-
+interface IUser {
+  id: string;
+  email: string;
+  role: string;
+}
 declare global {
   namespace Express {
     interface Request {
@@ -8,3 +10,5 @@ declare global {
     }
   }
 }
+
+export {}; // ← important to mark this as a module

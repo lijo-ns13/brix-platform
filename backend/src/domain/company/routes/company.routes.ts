@@ -1,13 +1,22 @@
+// job routers
+
 import { Router } from "express";
+import { JobController } from "../controllers/job.controller";
+import { JobService } from "../services/job.service";
+import { JobRepository } from "../repositories/job.repository";
+import { authenticate } from "../../../shared/middlewares/auth.middleware";
 
-import { authController } from "../controllers/auth.controller";
+// Inject dependencies
+const jobRepository = new JobRepository();
+const jobService = new JobService(jobRepository);
+const jobController = new JobController(jobService);
+
+// Router
 const router = Router();
-
-// auth related
-router.post("/auth/signin", authController.signIn);
-router.post("/auth/signup", authController.signUp);
-router.post("/auth/verify", authController.verify);
-router.post("/auth/resend", authController.resend);
-router.get("/auth/logout", authController.logout);
+router.use(authenticate("company"));
+// Middlewares like auth can go here (e.g. isCompanyAuth)
+router.post("/job", jobController.createJob);
+router.put("/job/:jobId", jobController.updateJob);
+router.delete("/job/:jobId", jobController.deleteJob);
 
 export default router;

@@ -8,6 +8,11 @@ export class SkillService {
     if (!title.trim()) {
       throw new Error("Skill title cannot be empty");
     }
+    const lowerTitle = title.trim();
+    const existingSkill = await this.repository.getByTitle(lowerTitle);
+    if (existingSkill) {
+      throw new Error("Skill already exists");
+    }
     return this.repository.create(title);
   }
 
@@ -15,7 +20,13 @@ export class SkillService {
     if (updates.title && !updates.title.trim()) {
       throw new Error("Skill title cannot be empty");
     }
-
+    const lowerTitle = updates.title;
+    if (lowerTitle) {
+      const existingSkill = await this.repository.getByTitle(lowerTitle);
+      if (existingSkill) {
+        throw new Error("Skill already exists");
+      }
+    }
     const updated = await this.repository.update(id, updates);
     if (!updated) {
       throw new Error("Skill not found");

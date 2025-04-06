@@ -6,4 +6,5 @@ export interface ISkillRepository {
   delete(id: string): Promise<boolean>;
   getAll(): Promise<ISkill[]>;
   getById(id: string): Promise<ISkill | null>;
+  getByTitle(title: string): Promise<ISkill | null>;
 }

@@ -10,6 +10,7 @@ import UserManagement from "../features/admin/pages/UserManagement";
 import CompanyManagement from "../features/admin/pages/CompanyManagement";
 import CompanyVerificationPage from "../features/admin/pages/CompanyVerification";
 
+import SkillList from "../features/admin/pages/SkillList";
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -30,6 +31,7 @@ const AdminRoutes = () => {
           path="/company-verification"
           element={<CompanyVerificationPage />}
         />
+        <Route path="/skill-management" element={<SkillList />}></Route>
       </Route>
     </Routes>
   );

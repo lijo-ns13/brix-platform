@@ -88,7 +88,7 @@ export const authenticate = (role: "user" | "admin" | "company") => {
     try {
       const accessToken = req.cookies.accessToken;
       const refreshToken = req.cookies.refreshToken;
-
+      // console.log(accessToken);
       if (!accessToken) {
         res
           .status(HTTP_STATUS_CODES.UNAUTHORIZED)
@@ -150,7 +150,7 @@ export const authenticate = (role: "user" | "admin" | "company") => {
         email: userPayload.email,
         role: userPayload.role,
       };
-
+      console.log("req user is authincatied", req.user);
       next();
     } catch (error) {
       console.error("Auth Middleware Error:", error);

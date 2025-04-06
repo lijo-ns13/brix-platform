@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 // routers
 import userRouter from "./domain/user/routes/user.routes";
 import adminRouter from "./domain/admin/routes/admin.routes";
+import companyAuthRouter from "./domain/company/routes/auth.company.routes";
 import companyRouter from "./domain/company/routes/company.routes";
 import googleRouter from "./domain/user/routes/google.route";
 
@@ -33,7 +34,8 @@ app.use(cookieParser());
 
 app.use("/", userRouter); //userrouter
 app.use("/admin", adminRouter); //adminrouter
-app.use("/company", companyRouter); //companyrouter
+app.use("/company", companyAuthRouter); //companyrouter
+app.use("/company", companyRouter);
 app.use("/api/auth", googleRouter);
 
 import userProfileRouter from "./domain/user/routes/user.profile.routes";

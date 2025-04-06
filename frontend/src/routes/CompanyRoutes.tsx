@@ -9,6 +9,7 @@ import VerifyEmail from "../features/company/pages/VerifyEmail";
 // protected pages
 import Dashboard from "../features/company/pages/Dashboard";
 import CompanyLayout from "../layouts/CompanyLayout";
+import CreateJobPage from "../features/company/pages/CreateJobPage";
 import Protected from "./Protected";
 
 const CompanyRoutes = () => {
@@ -29,6 +30,7 @@ const CompanyRoutes = () => {
       >
         {/* protected routes here */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/jobs" element={<CreateJobPage />} />
       </Route>
     </Routes>
   );
