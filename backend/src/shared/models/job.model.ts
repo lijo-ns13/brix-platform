@@ -1,7 +1,7 @@
 // src/shared/models/job.model.ts
-import mongoose, { Schema, Document } from "mongoose";
-import { ISkill } from "./skill.model";
-import { ICompany } from "./company.model";
+import mongoose, { Schema, Document, Types } from "mongoose";
+// import { ISkill } from "./skill.model";
+// import { ICompany } from "./company.model";
 import { IUser } from "./user.model";
 
 export enum EmploymentType {
@@ -75,9 +75,9 @@ export interface IJob extends Document {
   employmentType: EmploymentType;
   experienceLevel: ExperienceLevel;
 
-  company: mongoose.Types.ObjectId | ICompany;
+  company: Types.ObjectId;
 
-  skillsRequired: mongoose.Types.ObjectId[] | ISkill[];
+  skillsRequired: Types.ObjectId[];
   salary: SalaryRange;
   benefits: string[];
   perks?: string[];
@@ -93,7 +93,7 @@ export interface IJob extends Document {
   interviewDetails?: InterviewDetails;
 
   status: "open" | "closed" | "filled";
-  createdBy: mongoose.Types.ObjectId | IUser;
+  createdBy: { type: Schema.Types.ObjectId; ref: "Company"; required: true };
 
   createdAt: Date;
   updatedAt: Date;

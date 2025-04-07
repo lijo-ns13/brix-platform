@@ -11,7 +11,7 @@ import adminRouter from "./domain/admin/routes/admin.routes";
 import companyAuthRouter from "./domain/company/routes/auth.company.routes";
 import companyRouter from "./domain/company/routes/company.routes";
 import googleRouter from "./domain/user/routes/google.route";
-
+import userMainRouter from "./domain/user/routes/user.main.routes";
 dotenv.config();
 
 const app: Application = express();
@@ -37,7 +37,7 @@ app.use("/admin", adminRouter); //adminrouter
 app.use("/company", companyAuthRouter); //companyrouter
 app.use("/company", companyRouter);
 app.use("/api/auth", googleRouter);
-
+app.use("/", userMainRouter);
 import userProfileRouter from "./domain/user/routes/user.profile.routes";
 app.use("/user-profile", userProfileRouter);
 

@@ -45,7 +45,8 @@ export class JobController {
         benefits: req.body.benefits,
         experienceLevel: req.body.experienceLevel,
         applicationDeadline: req.body.applicationDeadline,
-        skillsRequired: skillsId.map((id) => id.toString()),
+        skillsRequired: skillsId,
+        createdBy: companyId,
       };
       console.log("jobData", jobData);
       // in req.body skillsRequired =["",""] if any one of skills not in skill modal add to them that adn store that skills id into job collection not entire req.body in that skills are in string user entered

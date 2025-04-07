@@ -9,9 +9,11 @@ import ResetPasswordPage from "../features/user/pages/ResetPasswordPage";
 import VerifyEmail from "../features/user/pages/VerifyEmail";
 // protected pages
 import FeedPage from "../features/user/pages/FeedPage";
+import JobPage from "../features/user/pages/JobPage";
 import Protected from "./Protected";
 import OAuthSuccessPage from "../features/user/pages/OAuthSuccess";
 import ProfilePage from "../features/user/pages/ProfilePage";
+import JobDetailedPage from "../features/user/pages/JobDetailedPage";
 const UserRoutes = () => {
   const { name } = useAppSelector((state) => state.auth);
   // name is Lijo N S like i want to lijo-n
@@ -38,6 +40,8 @@ const UserRoutes = () => {
       >
         {/* we can write other user routes like dahsboard,profeliall proetected */}
         <Route path="feed" element={<FeedPage />} />
+        <Route path="jobs" element={<JobPage />} />
+        <Route path="jobs/:jobId" element={<JobDetailedPage />} />
       </Route>
       {/* Protected + no user layout */}
       <Route
