@@ -187,4 +187,51 @@ export class UserProfileController {
       res.status(400).json({ message: error.message });
     }
   }
+  // Get all educations
+  async getAllEducations(req: Request, res: Response) {
+    try {
+      const educations = await this.userProfileService.getAllEducations(
+        req.params.userId
+      );
+      res.json(educations);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  // Get all experiences
+  async getAllExperiences(req: Request, res: Response) {
+    try {
+      const experiences = await this.userProfileService.getAllExperiences(
+        req.params.userId
+      );
+      res.json(experiences);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  // Get all projects
+  async getAllProjects(req: Request, res: Response) {
+    try {
+      const projects = await this.userProfileService.getAllProjects(
+        req.params.userId
+      );
+      res.json(projects);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  // Get all certificates
+  async getAllCertificates(req: Request, res: Response) {
+    try {
+      const certificates = await this.userProfileService.getAllCertificates(
+        req.params.userId
+      );
+      res.json(certificates);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
 }

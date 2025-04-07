@@ -11,10 +11,20 @@ function ProfilePage() {
       <Navbar />
       <UserProfile />
       <AddSection />
-      <ExperienceSection />
-      <ProjectSection />
-      <CertificateSection />
-      <EducationSection />
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mt-12">
+          <ExperienceSection />
+        </div>
+        <div className="mt-12">
+          <EducationSection />
+        </div>
+        <div className="mt-12">
+          <CertificateSection />
+        </div>
+        <div className="mt-12">
+          <ProjectSection />
+        </div>
+      </div>
     </>
   );
 }

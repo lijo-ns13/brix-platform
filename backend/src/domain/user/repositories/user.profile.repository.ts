@@ -271,4 +271,23 @@ export class UserProfileRepository implements IUserProfileRepository {
       return false;
     }
   }
+  // Get all educations for a user
+  async getAllEducations(userId: string): Promise<IUserEducation[]> {
+    return await userEducationModel.find({ userId });
+  }
+
+  // Get all experiences for a user
+  async getAllExperiences(userId: string): Promise<IUserExperience[]> {
+    return await userExperienceModel.find({ userId });
+  }
+
+  // Get all projects for a user
+  async getAllProjects(userId: string): Promise<IUserProject[]> {
+    return await userProjectModel.find({ userId });
+  }
+
+  // Get all certificates for a user
+  async getAllCertificates(userId: string): Promise<IUserCertificate[]> {
+    return await userCertificateModel.find({ userId });
+  }
 }

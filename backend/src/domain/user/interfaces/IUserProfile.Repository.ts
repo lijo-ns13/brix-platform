@@ -56,4 +56,8 @@ export interface IUserProfileRepository {
     data: Partial<IUserCertificate>
   ): Promise<IUserCertificate | null>;
   deleteCertificate(userId: string, certificateId: string): Promise<boolean>;
+  getAllEducations(userId: string): Promise<IUserEducation[]>;
+  getAllExperiences(userId: string): Promise<IUserExperience[]>;
+  getAllProjects(userId: string): Promise<IUserProject[]>;
+  getAllCertificates(userId: string): Promise<IUserCertificate[]>;
 }

@@ -156,4 +156,23 @@ export class UserProfileService {
     }
     return deleted;
   }
+  // Education
+  async getAllEducations(userId: string): Promise<IUserEducation[]> {
+    return await this.userRepository.getAllEducations(userId);
+  }
+
+  // Experience
+  async getAllExperiences(userId: string): Promise<IUserExperience[]> {
+    return await this.userRepository.getAllExperiences(userId);
+  }
+
+  // Projects
+  async getAllProjects(userId: string): Promise<IUserProject[]> {
+    return await this.userRepository.getAllProjects(userId);
+  }
+
+  // Certificates
+  async getAllCertificates(userId: string): Promise<IUserCertificate[]> {
+    return await this.userRepository.getAllCertificates(userId);
+  }
 }

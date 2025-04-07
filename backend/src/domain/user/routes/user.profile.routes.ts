@@ -64,5 +64,23 @@ userProfileRouter.patch("/:userId/certificate/:certificateId", (req, res) =>
 userProfileRouter.delete("/:userId/certificate/:certificateId", (req, res) =>
   userProfileController.deleteCertificate(req, res)
 );
+// Education Routes
+userProfileRouter.get("/:userId/educations", (req, res) =>
+  userProfileController.getAllEducations(req, res)
+);
 
+// Experience Routes
+userProfileRouter.get("/:userId/experiences", (req, res) =>
+  userProfileController.getAllExperiences(req, res)
+);
+
+// Project Routes
+userProfileRouter.get("/:userId/projects", (req, res) =>
+  userProfileController.getAllProjects(req, res)
+);
+
+// Certificate Routes
+userProfileRouter.get("/:userId/certificates", (req, res) =>
+  userProfileController.getAllCertificates(req, res)
+);
 export default userProfileRouter;

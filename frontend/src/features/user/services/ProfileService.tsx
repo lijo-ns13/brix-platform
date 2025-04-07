@@ -140,3 +140,20 @@ export const deleteCertificate = async (
     { withCredentials: true }
   );
 };
+
+export const getCertificates = async (userId: string) => {
+  const res = await userAxios.get(`${API_BASE_URL}/${userId}/certificates`);
+  return res.data;
+};
+export const getProjects = async (userId: string) => {
+  const res = await userAxios.get(`${API_BASE_URL}/${userId}/projects`);
+  return res.data;
+};
+export const getExperience = async (userId: string) => {
+  const res = await userAxios.get(`${API_BASE_URL}/${userId}/experiences`);
+  return res.data;
+};
+export const getEducations = async (userId: string) => {
+  const res = await userAxios.get(`${API_BASE_URL}/${userId}/educations`);
+  return res.data;
+};

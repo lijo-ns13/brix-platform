@@ -3,7 +3,9 @@ const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 console.log(cloudName, uploadPreset);
 
-export const uploadToCloudinary = async (file: File): Promise<string> => {
+export const uploadToCloudinary = async (
+  file: File | Blob
+): Promise<string> => {
   const formData = new FormData();
   formData.append("file", file);
 

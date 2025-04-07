@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import UserLayout from "../layouts/UserLayout";
+import { useAppSelector } from "../hooks/useAppSelector";
 // auth realted
 import SignInPage from "../features/user/pages/SignInPage";
 import SignUpPage from "../features/user/pages/SignUpPage";
@@ -12,6 +13,10 @@ import Protected from "./Protected";
 import OAuthSuccessPage from "../features/user/pages/OAuthSuccess";
 import ProfilePage from "../features/user/pages/ProfilePage";
 const UserRoutes = () => {
+  const { name } = useAppSelector((state) => state.auth);
+  // name is Lijo N S like i want to lijo-n
+  const modifiedName = name.toLocaleLowerCase().replace(/ /g, "-");
+  console.log("modifiedName", modifiedName);
   // get user role  from store here this
   return (
     <Routes>
@@ -36,7 +41,7 @@ const UserRoutes = () => {
       </Route>
       {/* Protected + no user layout */}
       <Route
-        path="user-profile"
+        path={modifiedName}
         element={
           <Protected SpecificRole="user" redirectPath="/login">
             <ProfilePage />

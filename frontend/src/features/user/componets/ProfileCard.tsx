@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const ProfileCard = () => {
+  const { name } = useAppSelector((state) => state.auth);
+  // name is Lijo N S like i want to lijo-n
+  const modifiedName = name.toLocaleLowerCase().replace(/ /g, "-");
+  console.log("modifiedName", modifiedName);
   return (
     <div className="w-64 bg-white shadow-lg rounded-lg p-4">
       <div className="flex flex-col items-center">
@@ -12,7 +17,10 @@ const ProfileCard = () => {
         <h2 className="text-xl font-semibold">John Doe</h2>
         <p className="text-sm text-gray-500">Software Engineer</p>
         <div className="mt-4">
-          <Link to="/profile" className="text-green-500 hover:text-green-700">
+          <Link
+            to={`/${modifiedName}`}
+            className="text-green-500 hover:text-green-700"
+          >
             View Profile
           </Link>
         </div>
