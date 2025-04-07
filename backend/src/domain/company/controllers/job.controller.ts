@@ -114,4 +114,82 @@ export class JobController {
       res.status(400).json({ error: err.message });
     }
   };
+  getJobs: RequestHandler = async (req: Request, res: Response) => {
+    try {
+      const companyId = (req.user as Userr)?.id;
+      if (!companyId) {
+        res
+          .status(HTTP_STATUS_CODES.BAD_REQUEST)
+          .json({ message: "Company ID required" });
+        return;
+      }
+
+      const page = Math.max(1, parseInt(req.query.page as string) || 1);
+      const limit = Math.max(1, parseInt(req.query.limit as string) || 10);
+
+      const { jobs, total } = await this.jobService.getJobs(
+        companyId,
+        page,
+        limit
+      );
+      res.status(HTTP_STATUS_CODES.OK).json({
+        success: true,
+        data: jobs,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (err: any) {
+      res
+        .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+        .json({ success: false, error: err.message });
+    }
+  };
+
+  getJobApplications: RequestHandler = async (req: Request, res: Response) => {
+    try {
+      const companyId = (req.user as Userr)?.id;
+      if (!companyId) {
+        res
+          .status(HTTP_STATUS_CODES.BAD_REQUEST)
+          .json({ message: "Company ID required" });
+        return;
+      }
+
+      const jobId = req.params.jobId;
+      const page = Math.max(1, parseInt(req.query.page as string) || 1);
+      const limit = Math.max(1, parseInt(req.query.limit as string) || 10);
+
+      const result = await this.jobService.getJobApplications(
+        jobId,
+        companyId,
+        page,
+        limit
+      );
+      if (!result) {
+        res
+          .status(HTTP_STATUS_CODES.NOT_FOUND)
+          .json({ success: false, message: "Job not found" });
+        return;
+      }
+
+      res.status(HTTP_STATUS_CODES.OK).json({
+        success: true,
+        data: result.applications,
+        pagination: {
+          total: result.total,
+          page,
+          limit,
+          totalPages: Math.ceil(result.total / limit),
+        },
+      });
+    } catch (err: any) {
+      res
+        .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+        .json({ success: false, error: err.message });
+    }
+  };
 }

@@ -1,4 +1,4 @@
-import { IJob } from "../../../shared/models/job.model";
+import { IJob, JobApplication } from "../../../shared/models/job.model";
 export interface CreateJobDto {
   title: string;
   description: string;
@@ -46,4 +46,15 @@ export interface IJobRepository {
 
   // 🔴 DELETE
   deleteJob(jobId: string, companyId: string): Promise<boolean>;
+  getJobs(
+    companyId: string,
+    page: number,
+    limit: number
+  ): Promise<{ jobs: IJob[]; total: number }>;
+  getJobApplications(
+    jobId: string,
+    companyId: string,
+    page: number,
+    limit: number
+  ): Promise<{ applications: JobApplication[]; total: number } | null>;
 }

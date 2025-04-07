@@ -18,5 +18,6 @@ router.use(authenticate("company"));
 router.post("/job", jobController.createJob);
 router.put("/job/:jobId", jobController.updateJob);
 router.delete("/job/:jobId", jobController.deleteJob);
-
+router.get("/job", jobController.getJobs);
+router.get("/job/:jobId/applications", jobController.getJobApplications);
 export default router;
