@@ -5,6 +5,7 @@ import { IUserExperience } from "../../../shared/models/user.experience.model";
 import { IUserProject } from "../../../shared/models/user.project.model";
 import { IUserCertificate } from "../../../shared/models/user.certificate.model";
 import { UserProfileService } from "../services/user.profile.service";
+import { HTTP_STATUS_CODES } from "../../../shared/constants/httpStatusCode";
 interface User {
   id: string;
   email: string;
@@ -18,9 +19,11 @@ export class UserProfileController {
       const user = await this.userProfileService.getUserProfile(
         req.params.userId
       );
-      res.json(user);
+      res.status(HTTP_STATUS_CODES.OK).json(user);
     } catch (error: any) {
-      res.status(404).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -30,9 +33,11 @@ export class UserProfileController {
         req.params.userId,
         req.body
       );
-      res.json(updatedUser);
+      res.status(HTTP_STATUS_CODES.OK).json(updatedUser);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -42,18 +47,22 @@ export class UserProfileController {
         req.params.userId,
         req.body.imageUrl
       );
-      res.json(updated);
+      res.status(HTTP_STATUS_CODES.OK).json(updated);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
   async deleteProfileImage(req: Request, res: Response) {
     try {
       await this.userProfileService.deleteProfileImage(req.params.userId);
-      res.status(204).send();
+      res.status(HTTP_STATUS_CODES.OK).send();
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -63,9 +72,11 @@ export class UserProfileController {
         req.params.userId,
         req.body as IUserEducation
       );
-      res.status(201).json(education);
+      res.status(HTTP_STATUS_CODES.CREATED).json(education);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async editEducation(req: Request, res: Response) {
@@ -74,9 +85,11 @@ export class UserProfileController {
         req.params.educationId,
         req.body as Partial<IUserEducation>
       );
-      res.json(updatedEducation);
+      res.status(HTTP_STATUS_CODES.OK).json(updatedEducation);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async deleteEducation(req: Request, res: Response) {
@@ -85,9 +98,11 @@ export class UserProfileController {
         req.params.userId,
         req.params.educationId
       );
-      res.status(204).send();
+      res.status(HTTP_STATUS_CODES.OK).send();
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -97,9 +112,11 @@ export class UserProfileController {
         req.params.userId,
         req.body as IUserExperience
       );
-      res.status(201).json(experience);
+      res.status(HTTP_STATUS_CODES.CREATED).json(experience);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async editExperience(req: Request, res: Response) {
@@ -108,9 +125,11 @@ export class UserProfileController {
         req.params.experienceId,
         req.body as Partial<IUserExperience>
       );
-      res.json(updatedExperience);
+      res.status(HTTP_STATUS_CODES.OK).json(updatedExperience);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async deleteExperience(req: Request, res: Response) {
@@ -119,9 +138,11 @@ export class UserProfileController {
         req.params.userId,
         req.params.experienceId
       );
-      res.status(204).send();
+      res.status(HTTP_STATUS_CODES.OK).send();
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -131,9 +152,11 @@ export class UserProfileController {
         req.params.userId,
         req.body as IUserProject
       );
-      res.status(201).json(project);
+      res.status(HTTP_STATUS_CODES.CREATED).json(project);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async editProject(req: Request, res: Response) {
@@ -142,9 +165,11 @@ export class UserProfileController {
         req.params.projectId,
         req.body as Partial<IUserProject>
       );
-      res.json(updatedProject);
+      res.status(HTTP_STATUS_CODES.OK).json(updatedProject);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async deleteProject(req: Request, res: Response) {
@@ -153,9 +178,11 @@ export class UserProfileController {
         req.params.userId,
         req.params.projectId
       );
-      res.status(204).send();
+      res.status(HTTP_STATUS_CODES.OK).send();
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -165,9 +192,11 @@ export class UserProfileController {
         req.params.userId,
         req.body as IUserCertificate
       );
-      res.status(201).json(certificate);
+      res.status(HTTP_STATUS_CODES.CREATED).json(certificate);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async editCertificate(req: Request, res: Response) {
@@ -178,7 +207,9 @@ export class UserProfileController {
       );
       res.json(updatedCertificate);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async deleteCertificate(req: Request, res: Response) {
@@ -187,9 +218,11 @@ export class UserProfileController {
         req.params.userId,
         req.params.certificateId
       );
-      res.status(204).send();
+      res.status(HTTP_STATUS_CODES.OK).send();
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   // Get all educations
@@ -198,9 +231,11 @@ export class UserProfileController {
       const educations = await this.userProfileService.getAllEducations(
         req.params.userId
       );
-      res.json(educations);
+      res.status(HTTP_STATUS_CODES.OK).json(educations);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -210,9 +245,11 @@ export class UserProfileController {
       const experiences = await this.userProfileService.getAllExperiences(
         req.params.userId
       );
-      res.json(experiences);
+      res.status(HTTP_STATUS_CODES.OK).json(experiences);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -222,9 +259,11 @@ export class UserProfileController {
       const projects = await this.userProfileService.getAllProjects(
         req.params.userId
       );
-      res.json(projects);
+      res.status(HTTP_STATUS_CODES.OK).json(projects);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 
@@ -234,9 +273,11 @@ export class UserProfileController {
       const certificates = await this.userProfileService.getAllCertificates(
         req.params.userId
       );
-      res.json(certificates);
+      res.status(HTTP_STATUS_CODES.OK).json(certificates);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
   async changePassword(req: Request, res: Response) {
@@ -253,9 +294,13 @@ export class UserProfileController {
         newPassword,
         confirmPassword
       );
-      res.status(200).json({ message: "Password updated successfully" });
+      res
+        .status(HTTP_STATUS_CODES.OK)
+        .json({ message: "Password updated successfully" });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: error.message });
     }
   }
 }

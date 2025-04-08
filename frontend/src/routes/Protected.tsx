@@ -33,7 +33,6 @@ const Protected = ({
     return <Navigate to={"/locked-dashboard"} />;
   }
   if (!isAuthenticated) {
-    toast.error("user is not login");
     dispatch(logout());
     return <Navigate to={redirectPath} />;
   }

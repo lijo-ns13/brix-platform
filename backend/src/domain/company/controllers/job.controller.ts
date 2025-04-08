@@ -19,7 +19,9 @@ export class JobController {
     try {
       const companyId = (req.user as Userr)?.id; // assuming company is authenticated and available
       if (!companyId) {
-        res.status(400).json({ message: "no company id" });
+        res
+          .status(HTTP_STATUS_CODES.BAD_REQUEST)
+          .json({ message: "no company id" });
         return;
       }
       const skillsId = [];
@@ -54,7 +56,9 @@ export class JobController {
       console.log("isValidateData", validatedData);
 
       const job = await this.jobService.createJob(validatedData, companyId);
-      res.status(201).json({ message: "Job created successfully", job });
+      res
+        .status(HTTP_STATUS_CODES.CREATED)
+        .json({ message: "Job created successfully", job });
     } catch (err: any) {
       if (err instanceof ZodError) {
         const errObj: Record<string, string> = {};
@@ -76,7 +80,9 @@ export class JobController {
     try {
       const companyId = (req.user as Userr)?.id;
       if (!companyId) {
-        res.status(400).json({ message: "No company id provided" });
+        res
+          .status(HTTP_STATUS_CODES.BAD_REQUEST)
+          .json({ message: "No company id provided" });
         return;
       }
 
@@ -108,11 +114,15 @@ export class JobController {
       );
 
       if (!updatedJob) {
-        res.status(404).json({ message: "Job not found or unauthorized" });
+        res
+          .status(HTTP_STATUS_CODES.NOT_FOUND)
+          .json({ message: "Job not found or unauthorized" });
         return;
       }
 
-      res.status(200).json({ message: "Job updated successfully", updatedJob });
+      res
+        .status(HTTP_STATUS_CODES.OK)
+        .json({ message: "Job updated successfully", updatedJob });
     } catch (err: any) {
       if (err instanceof ZodError) {
         const errObj: Record<string, string> = {};
@@ -123,7 +133,9 @@ export class JobController {
           .status(HTTP_STATUS_CODES.BAD_REQUEST)
           .json({ success: false, errors: errObj });
       } else {
-        res.status(400).json({ success: false, error: err.message });
+        res
+          .status(HTTP_STATUS_CODES.BAD_REQUEST)
+          .json({ success: false, error: err.message });
       }
     }
   };
@@ -132,18 +144,24 @@ export class JobController {
     try {
       const companyId = (req.user as Userr)?.id;
       if (!companyId) {
-        res.status(400).json({ message: "no company id" });
+        res
+          .status(HTTP_STATUS_CODES.BAD_REQUEST)
+          .json({ message: "no company id" });
         return;
       }
       const jobId = req.params.jobId;
       const deleted = await this.jobService.deleteJob(jobId, companyId);
       if (!deleted) {
-        res.status(404).json({ message: "Job not found or unauthorized" });
+        res
+          .status(HTTP_STATUS_CODES.NOT_FOUND)
+          .json({ message: "Job not found or unauthorized" });
         return;
       }
-      res.status(200).json({ message: "Job deleted successfully" });
+      res
+        .status(HTTP_STATUS_CODES.OK)
+        .json({ message: "Job deleted successfully" });
     } catch (err: any) {
-      res.status(400).json({ error: err.message });
+      res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: err.message });
     }
   };
   getJobs: RequestHandler = async (req: Request, res: Response) => {

@@ -1,12 +1,18 @@
+// CreateJobPage.tsx
 import { useState } from "react";
-
 import CreateJobForm from "../components/Job/CreateJobForm";
 import BigModal from "../../user/componets/modals/BigModal";
-function CreateJobPage() {
+
+function CreateJobPage({ onJobCreated }: { onJobCreated: () => void }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const handleSuccess = () => {
+    closeModal();
+    onJobCreated(); // <-- refresh jobs list
+  };
 
   return (
     <>
@@ -22,7 +28,7 @@ function CreateJobPage() {
         onClose={closeModal}
         title="Create New Job"
       >
-        <CreateJobForm onSuccess={() => setIsModalOpen(false)} />
+        <CreateJobForm onSuccess={handleSuccess} />
       </BigModal>
     </>
   );

@@ -180,7 +180,7 @@ function JobDetailedPage() {
                   </h3>
                   <p className="text-lg font-medium text-gray-900">
                     {salary.isVisibleToApplicants ? (
-                      `${salary.currency} ${salary.min}k - ${salary.maxk}`
+                      `${salary.currency} ${salary.min} - ${salary.max} LPA`
                     ) : (
                       <span className="text-gray-500">Confidential</span>
                     )}

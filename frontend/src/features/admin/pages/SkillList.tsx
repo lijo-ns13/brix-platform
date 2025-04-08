@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { SkillService } from "../services/skillServices";
 import BaseModal from "../../user/componets/modals/BaseModal";
 import { PlusCircle, Edit, Trash2, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface Skill {
   _id: string;
@@ -40,6 +41,7 @@ export default function SkillList() {
 
     try {
       await SkillService.createSkill({ title: title.trim().toLowerCase() });
+      toast.success("successfully added new skill");
       setTitle("");
       setCreateSkillModal(false);
       await fetchSkills();
@@ -55,6 +57,7 @@ export default function SkillList() {
 
     try {
       await SkillService.deleteSkill(skillId);
+      toast.success("successfully deleted");
       await fetchSkills();
     } catch (error) {
       console.error("Error deleting skill:", error);
@@ -72,6 +75,7 @@ export default function SkillList() {
         title: editTitle.trim().toLowerCase(),
       });
       setEditingSkill(null);
+      toast.success("succesully updated");
       setEditTitle("");
       await fetchSkills();
     } catch (error: any) {

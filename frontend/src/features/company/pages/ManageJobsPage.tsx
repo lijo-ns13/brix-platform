@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { JobService } from "../services/jobServices";
 // import { Job } from "../types/job";
 import Spinner from "../components/Spinner";
-
+import CreateJobPage from "./CreateJobPage";
 function ManageJobsPage() {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
@@ -12,24 +12,24 @@ function ManageJobsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchJobs();
-  }, [page, limit]);
-
-  async function fetchJobs() {
+  const fetchJobs = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
-      const res = await JobService.getJobs(page, limit);
+      const res = await JobService.getJobs(page, 3);
       setJobs(res.data);
-      setTotalPages(res.totalPages); // Adjust based on your API response
+      setTotalPages(res.totalPages);
     } catch (err) {
       setError("Failed to fetch jobs. Please try again later.");
       console.error("Failed to fetch jobs:", err);
     } finally {
       setLoading(false);
     }
-  }
+  }, [page, limit]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
 
   if (loading) {
     return <Spinner />;
@@ -41,6 +41,7 @@ function ManageJobsPage() {
 
   return (
     <div className="container mx-auto p-4">
+      <CreateJobPage onJobCreated={fetchJobs} />
       <div className="flex justify-between items-center mb-6"></div>
 
       {jobs.length === 0 ? (

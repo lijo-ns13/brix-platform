@@ -2,6 +2,7 @@ import { Request, RequestHandler, Response } from "express";
 import { JobService } from "../services/job.service";
 import { JobRepository } from "../repositories/job.repository";
 import { UserRepository } from "../repositories/user.repository";
+import { HTTP_STATUS_CODES } from "../../../shared/constants/httpStatusCode";
 
 const jobRepository = new JobRepository();
 const userRepository = new UserRepository();
@@ -18,9 +19,11 @@ export const getAllJobs: RequestHandler = async (
   try {
     const jobs = await jobService.getAllJobs();
     console.log("jobs", jobs);
-    res.status(200).json(jobs);
+    res.status(HTTP_STATUS_CODES.OK).json(jobs);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
   }
 };
 export const getJob: RequestHandler = async (req: Request, res: Response) => {
@@ -28,9 +31,11 @@ export const getJob: RequestHandler = async (req: Request, res: Response) => {
     const { jobId } = req.params;
     const job = await jobService.getJob(jobId);
     console.log("jobs", job);
-    res.status(200).json(job);
+    res.status(HTTP_STATUS_CODES.OK).json(job);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
   }
 };
 export const applyToJob: RequestHandler = async (
@@ -43,7 +48,7 @@ export const applyToJob: RequestHandler = async (
 
     if (!userId) {
       res
-        .status(401)
+        .status(HTTP_STATUS_CODES.UNAUTHORIZED)
         .json({ message: "User not authenticated or user ID missing" });
       return;
     }
@@ -51,14 +56,18 @@ export const applyToJob: RequestHandler = async (
     const { resumeUrl } = req.body;
 
     if (!resumeUrl) {
-      res.status(400).json({ message: "Resume URL is required" });
+      res
+        .status(HTTP_STATUS_CODES.BAD_REQUEST)
+        .json({ message: "Resume URL is required" });
       return;
     }
 
     const updatedJob = await jobService.applyToJob(jobId, userId, resumeUrl);
-    res.status(200).json(updatedJob);
+    res.status(HTTP_STATUS_CODES.OK).json(updatedJob);
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
   }
 };
 export const getSavedJobs: RequestHandler = async (
@@ -68,9 +77,11 @@ export const getSavedJobs: RequestHandler = async (
   try {
     const user = req.user as Userr;
     const savedJobs = await jobService.getSavedJobs(user.id);
-    res.status(200).json(savedJobs);
+    res.status(HTTP_STATUS_CODES.OK).json(savedJobs);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
   }
 };
 
@@ -81,9 +92,11 @@ export const getAppliedJobs: RequestHandler = async (
   try {
     const user = req.user as Userr;
     const appliedJobs = await jobService.getAppliedJobs(user.id);
-    res.status(200).json(appliedJobs);
+    res.status(HTTP_STATUS_CODES.OK).json(appliedJobs);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
   }
 };
 
@@ -92,9 +105,13 @@ export const saveJob: RequestHandler = async (req: Request, res: Response) => {
     const { jobId } = req.params;
     const user = req.user as Userr;
     await jobService.addToSavedJobs(user.id, jobId);
-    res.status(200).json({ message: "Job saved successfully" });
+    res
+      .status(HTTP_STATUS_CODES.OK)
+      .json({ message: "Job saved successfully" });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
   }
 };
 
@@ -106,8 +123,12 @@ export const unsaveJob: RequestHandler = async (
     const { jobId } = req.params;
     const user = req.user as Userr;
     await jobService.removeFromSavedJobs(user.id, jobId);
-    res.status(200).json({ message: "Job removed from saved jobs" });
+    res
+      .status(HTTP_STATUS_CODES.OK)
+      .json({ message: "Job removed from saved jobs" });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
   }
 };
