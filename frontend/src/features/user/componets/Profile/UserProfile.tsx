@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import BaseModal from "../modals/BaseModal";
+import { updateProfile as updateSlice } from "../../../auth/auth.slice";
 import {
   getUserProfile,
   updateUserProfile,
 } from "../../services/ProfileService";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 const ProfileImage = React.lazy(() => import("./ProfileImage"));
-
+import { useAppDispatch } from "../../../../hooks/useAppDispatch";
 function UserProfile() {
+  const dispatch = useAppDispatch();
   const { id: userId } = useAppSelector((state) => state.auth);
   const [userData, setUserData] = useState({
     name: "",
@@ -65,7 +67,12 @@ function UserProfile() {
       if (res) {
         setUserData(updatingUserData);
         setIsEditModalOpen(false);
+        dispatch(updateSlice({
+          name:userData.name,
+          headline:userData.headline
+        }));
       }
+      console.log("resprofle", res);
     } catch (error) {
       console.error("Failed to update profile:", error);
       setError("Failed to update profile. Please try again.");

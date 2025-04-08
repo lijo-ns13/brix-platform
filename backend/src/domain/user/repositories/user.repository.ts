@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import userModel, { IUser } from "../../../shared/models/user.model";
 import { IUserRepository } from "../interfaces/IUserRepository";
 
@@ -23,5 +24,32 @@ export class UserRepository implements IUserRepository {
   }
   async findByGoogleId(googleId: string) {
     return userModel.findOne({ googleId });
+  }
+  // ✅ Add job to appliedJobs
+  async addToAppliedJobs(userId: string, jobId: string): Promise<void> {
+    await userModel.findByIdAndUpdate(userId, {
+      $addToSet: { appliedJobs: new mongoose.Types.ObjectId(jobId) },
+    });
+  }
+
+  // ✅ Add job to savedJobs
+  async addToSavedJobs(userId: string, jobId: string): Promise<void> {
+    await userModel.findByIdAndUpdate(userId, {
+      $addToSet: { savedJobs: new mongoose.Types.ObjectId(jobId) },
+    });
+  }
+
+  // ✅ Remove job from savedJobs
+  async removeFromSavedJobs(userId: string, jobId: string): Promise<void> {
+    await userModel.findByIdAndUpdate(userId, {
+      $pull: { savedJobs: new mongoose.Types.ObjectId(jobId) },
+    });
+  }
+  async getSavedJobs(userId: string): Promise<IUser | null> {
+    return userModel.findById(userId).populate("savedJobs");
+  }
+
+  async getAppliedJobs(userId: string): Promise<IUser | null> {
+    return userModel.findById(userId).populate("appliedJobs");
   }
 }

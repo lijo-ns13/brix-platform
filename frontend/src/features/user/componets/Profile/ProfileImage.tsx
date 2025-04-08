@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { updateProfile as updateSlice } from "../../../auth/auth.slice";
 import {
   getUserProfile,
   updateProfileImage,
@@ -10,8 +11,9 @@ import { uploadToCloudinary } from "../../../company/services/cloudinaryService"
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { Crop, X } from "lucide-react"; // Import icons from your icon library
-
+import { useAppDispatch } from "../../../../hooks/useAppDispatch";
 function ProfileImage() {
+  const dispatch = useAppDispatch();
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
   const [profilePicture, setProfilePicture] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -39,6 +41,7 @@ function ProfileImage() {
     try {
       const res = await getUserProfile(id);
       setProfilePicture(res.profilePicture);
+      console.log("resprofiel", res);
     } catch (error) {
       console.error("Failed to fetch user profile:", error);
     }
@@ -88,7 +91,15 @@ function ProfileImage() {
         try {
           const url = await uploadToCloudinary(blob);
           console.log("url", url);
-          await updateProfileImage(id, url);
+          const res = await updateProfileImage(id, url);
+          console.log("ressing", res);
+          if (res) {
+            dispatch(
+              updateSlice({
+                profilePicture: res.profilePicture,
+              })
+            );
+          }
           setProfilePicture(url);
           setIsCropping(false);
           setSrcImage(null);
@@ -110,6 +121,12 @@ function ProfileImage() {
       await deleteProfileImage(id);
       setProfilePicture("");
       setIsImageModalOpen(false);
+
+      dispatch(
+        updateSlice({
+          profilePicture: "",
+        })
+      );
     } catch (error) {
       console.error("Failed to delete profile image:", error);
     }

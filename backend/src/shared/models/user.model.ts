@@ -21,6 +21,8 @@ export interface IUser extends Document {
   updatedAt?: Date;
   googleId?: string;
   isVerified: boolean;
+  appliedJobs: mongoose.Types.ObjectId[] | [];
+  savedJobs: mongoose.Types.ObjectId[] | [];
 }
 
 const userSchema = new Schema<IUser>(
@@ -98,6 +100,18 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: true,
     },
+    appliedJobs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Job",
+      },
+    ],
+    savedJobs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Job",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -127,3 +141,5 @@ userSchema.pre("save", async function (next) {
 });
 
 export default mongoose.model<IUser>("User", userSchema);
+
+// applied and saved jobs id i will poplulate that

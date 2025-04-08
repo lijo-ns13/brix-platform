@@ -296,10 +296,11 @@ export class UserProfileRepository implements IUserProfileRepository {
     currentPassword: string,
     newPassword: string
   ): Promise<boolean> {
-    const user = await userModel.findById(userId);
+    const user = await userModel.findById(userId).select("+password");
     if (!user) throw new Error("User not found");
-
-    const isMatch = await bcrypt.compare(newPassword, currentPassword);
+    if (!user.password)
+      throw new Error("google users cant change there password");
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) throw new Error("Current password is incorrect");
 
     user.password = newPassword;

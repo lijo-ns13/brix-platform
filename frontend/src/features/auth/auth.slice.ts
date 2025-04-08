@@ -5,9 +5,10 @@ interface AuthState {
   isAuthenticated: boolean;
   id: string;
   name: string;
+  headline: string;
   email: string;
   role: string;
-  profileImage: string;
+  profilePicture: string;
   isVerified: boolean;
   isBlocked: boolean;
 }
@@ -18,7 +19,8 @@ const initialState: AuthState = {
   name: "",
   email: "",
   role: "",
-  profileImage: "",
+  profilePicture: "",
+  headline: "",
   isVerified: false,
   isBlocked: false,
 };
@@ -34,7 +36,8 @@ const authSlice = createSlice({
         name: string;
         email: string;
         role: string;
-        profileImage: string;
+        profilePicture?: string;
+        headline?: string;
         isVerified: boolean;
         isBlocked: boolean;
       }>
@@ -44,7 +47,8 @@ const authSlice = createSlice({
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.role = action.payload.role;
-      state.profileImage = action.payload.profileImage;
+      state.profilePicture = action.payload.profilePicture ?? ""; // fallback if undefined
+      state.headline = action.payload.headline ?? ""; // fallback if undefined
       state.isVerified = action.payload.isVerified;
       state.isBlocked = action.payload.isBlocked;
     },
@@ -54,12 +58,27 @@ const authSlice = createSlice({
       state.name = "";
       state.email = "";
       state.role = "";
-      state.profileImage = "";
+      state.profilePicture = "";
+      state.headline = "";
       state.isBlocked = false;
       state.isVerified = false;
+    },
+    updateProfile: (
+      state,
+      action: PayloadAction<{
+        name?: string;
+        headline?: string;
+        profilePicture?: string;
+      }>
+    ) => {
+      if (action.payload.name) state.name = action.payload.name;
+      if (action.payload.headline) state.headline = action.payload.headline;
+      if (action.payload.profilePicture !== undefined) {
+        state.profilePicture = action.payload.profilePicture;
+      }
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateProfile } = authSlice.actions;
 export default authSlice.reducer;

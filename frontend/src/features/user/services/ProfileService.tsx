@@ -157,3 +157,15 @@ export const getEducations = async (userId: string) => {
   const res = await userAxios.get(`${API_BASE_URL}/${userId}/educations`);
   return res.data;
 };
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string,
+  confirmPassword: string
+) => {
+  const response = await userAxios.patch(
+    `${API_BASE_URL}/change-password`,
+    { currentPassword, newPassword, confirmPassword },
+    { withCredentials: true }
+  );
+  return response.data;
+};

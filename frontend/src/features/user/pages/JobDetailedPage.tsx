@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getJob } from "../services/JobServices";
+import { getJob, saveJob, unsaveJob } from "../services/JobServices";
 import ApplyModal from "../componets/ApplyModal";
 import {
   Briefcase,
@@ -129,21 +129,32 @@ function JobDetailedPage() {
     setApplicationSuccess(false);
   };
 
-  const handleBookmark = () => {
-    setBookmarked(!bookmarked);
-    // Show a temporary notification
-    const message = bookmarked
-      ? "Removed from saved jobs"
-      : "Saved to your bookmarks";
-    const notification = document.createElement("div");
-    notification.className =
-      "fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in-up";
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-      notification.classList.add("animate-fade-out-down");
-      setTimeout(() => document.body.removeChild(notification), 500);
-    }, 2000);
+  const handleBookmark = async (jobId: string) => {
+    try {
+      const action = bookmarked ? unsaveJob : saveJob;
+      await action(jobId);
+
+      setBookmarked(!bookmarked);
+
+      // Notification
+      const message = bookmarked
+        ? "❌ Removed from saved jobs"
+        : "🔖 Saved to your bookmarks";
+
+      const notification = document.createElement("div");
+      notification.className =
+        "fixed bottom-4 right-4 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-xl z-50 animate-fade-in-up transition-all duration-500";
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.classList.add("opacity-0", "translate-y-4");
+        setTimeout(() => document.body.removeChild(notification), 500);
+      }, 2000);
+    } catch (error) {
+      console.error("Bookmarking failed", error);
+      alert("Failed to save job. Please try again.");
+    }
   };
 
   const handleShare = () => {
@@ -310,7 +321,7 @@ function JobDetailedPage() {
           </div>
           <div className="flex gap-2 md:justify-end">
             <button
-              onClick={handleBookmark}
+              onClick={() => handleBookmark(job._id)}
               className={`p-2 rounded-full ${
                 bookmarked
                   ? "bg-blue-50 text-blue-600"
@@ -318,7 +329,10 @@ function JobDetailedPage() {
               } hover:bg-gray-200 transition-colors`}
               aria-label="Bookmark job"
             >
-              <Bookmark className="h-5 w-5" />
+              <Bookmark
+                className="h-5 w-5"
+                fill={bookmarked ? "currentColor" : "none"}
+              />
             </button>
             <button
               onClick={handleShare}

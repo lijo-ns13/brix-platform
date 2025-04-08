@@ -8,6 +8,9 @@ const userProfileService = new UserProfileService(new UserProfileRepository());
 const userProfileController = new UserProfileController(userProfileService);
 
 userProfileRouter.use(authenticate("user"));
+userProfileRouter.patch("/change-password", (req, res) =>
+  userProfileController.changePassword(req, res)
+);
 userProfileRouter.get("/:userId", (req, res) =>
   userProfileController.getUserProfile(req, res)
 );
@@ -83,7 +86,5 @@ userProfileRouter.get("/:userId/projects", (req, res) =>
 userProfileRouter.get("/:userId/certificates", (req, res) =>
   userProfileController.getAllCertificates(req, res)
 );
-userProfileRouter.post("/change-password", (req, res) =>
-  userProfileController.changePassword(req, res)
-);
+
 export default userProfileRouter;

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import ChangePasswordForm from "../componets/Profile/ChangePasswordForm";
 const UserProfile = React.lazy(
   () => import("../componets/Profile/UserProfile")
 );
@@ -15,8 +16,10 @@ const CertificateSection = React.lazy(
 const EducationSection = React.lazy(
   () => import("../componets/Profile/EducationSection")
 );
+import BaseModal from "../componets/modals/BaseModal";
 import Navbar from "../componets/NavBar";
 function ProfilePage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
       <Navbar />
@@ -36,6 +39,16 @@ function ProfilePage() {
           <ProjectSection />
         </div>
       </div>
+      <button onClick={() => setIsModalOpen(true)}>Change Password</button>
+      {isModalOpen && (
+        <BaseModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="changepassowrd"
+        >
+          <ChangePasswordForm />
+        </BaseModal>
+      )}
     </>
   );
 }

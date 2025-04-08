@@ -242,6 +242,11 @@ export class UserProfileController {
   async changePassword(req: Request, res: Response) {
     try {
       const { currentPassword, newPassword, confirmPassword } = req.body;
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        res.status(400).json({ message: "Please provide all fields" });
+        return;
+      }
+      console.log("req.body", req.body);
       await this.userProfileService.changePassword(
         (req.user as User)?.id,
         currentPassword,

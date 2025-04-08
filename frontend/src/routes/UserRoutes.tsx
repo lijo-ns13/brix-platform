@@ -14,6 +14,8 @@ import Protected from "./Protected";
 import OAuthSuccessPage from "../features/user/pages/OAuthSuccess";
 import ProfilePage from "../features/user/pages/ProfilePage";
 import JobDetailedPage from "../features/user/pages/JobDetailedPage";
+import AppliedJobsPage from "../features/user/pages/AppliedJobsPage";
+import SavedJobsPage from "../features/user/pages/SavedJobsPage";
 const UserRoutes = () => {
   // const { name } = useAppSelector((state) => state.auth);
   // name is Lijo N S like i want to lijo-n
@@ -42,6 +44,8 @@ const UserRoutes = () => {
         <Route path="feed" element={<FeedPage />} />
         <Route path="jobs" element={<JobPage />} />
         <Route path="jobs/:jobId" element={<JobDetailedPage />} />
+        <Route path="applied-jobs" element={<AppliedJobsPage />} />
+        <Route path="saved-jobs" element={<SavedJobsPage />} />
       </Route>
       {/* Protected + no user layout */}
       <Route
