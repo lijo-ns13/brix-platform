@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 const BASE_URL = "http://localhost:3000/company/auth";
 export const signUpCompany = async (
   companyName: string,
@@ -33,11 +34,11 @@ export const signUpCompany = async (
     const { success } = response.data;
 
     if (!success) {
-      alert("Signinn failed");
+      toast.error("error occured");
       return;
     }
 
-    alert("Signin successful");
+    toast.success("signin successfull");
 
     return { success };
   } catch (error: any) {
@@ -77,12 +78,12 @@ export const verifyCompanyByOTP = async (email: string | null, otp: string) => {
         withCredentials: true,
       }
     );
-    const { success } = response.data;
+    const { success, message } = response.data;
     if (!success) {
-      alert("failed");
+      toast.error(message || "error occured");
       return;
     }
-    alert("success");
+    toast.success("successfully verfied");
   } catch (error) {
     console.log("error in serviced", error);
     throw error;
@@ -97,12 +98,12 @@ export const resendOTP = async (email: string | null) => {
         withCredentials: true,
       }
     );
-    const { success } = response.data;
+    const { success, message } = response.data;
     if (!success) {
-      alert("failed");
+      toast.error(message || "error occured");
       return;
     }
-    alert("success");
+    toast.success("resent otp successfully");
   } catch (error) {
     console.log("errorin resned", error);
     throw error;

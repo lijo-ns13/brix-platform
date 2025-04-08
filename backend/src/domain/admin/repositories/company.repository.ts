@@ -1,5 +1,5 @@
 import companyModel from "../../../shared/models/company.model";
-
+import tempCompanyModel from "../../../shared/models/temp.company.model";
 export class CompanyRepository {
   async findById(companyId: string) {
     return companyModel.findById(companyId);
@@ -9,6 +9,10 @@ export class CompanyRepository {
     return companyModel.findByIdAndUpdate(companyId, updateData, { new: true });
   }
   async deleteCompany(companyId: string) {
+    const data = await companyModel.findById(companyId);
+    if (data) {
+      await tempCompanyModel.findOneAndDelete({ email: data.email });
+    }
     return companyModel.findByIdAndDelete(companyId);
   }
 

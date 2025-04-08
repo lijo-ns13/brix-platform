@@ -23,7 +23,9 @@ const CompanyVerificationPage: React.FC = () => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null); // Lightbox modal state
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [showRejectReasonInput, setShowRejectReasonInput] = useState(false);
 
   useEffect(() => {
     fetchUnverifiedCompanies();
@@ -52,14 +54,17 @@ const CompanyVerificationPage: React.FC = () => {
     setSelectedCompany(null);
   };
 
-  const handleVerification = async (status: "accepted" | "rejected") => {
+  const handleVerification = async (
+    status: "accepted" | "rejected",
+    reason?: string
+  ) => {
     if (!selectedCompany) return;
     setActionLoading(true);
 
     try {
       await adminAxios.patch(
         `http://localhost:3000/admin/companies/verify/${selectedCompany._id}`,
-        { status }
+        { status, rejectionReason: reason }
       );
 
       fetchUnverifiedCompanies();
@@ -68,6 +73,8 @@ const CompanyVerificationPage: React.FC = () => {
       console.error(`Failed to ${status} company:`, err);
     } finally {
       setActionLoading(false);
+      setRejectionReason("");
+      setShowRejectReasonInput(false);
     }
   };
 
@@ -218,21 +225,54 @@ const CompanyVerificationPage: React.FC = () => {
 
               {/* Action Buttons */}
               <div className="flex justify-end gap-4 mt-8">
-                <button
-                  onClick={() => handleVerification("rejected")}
-                  disabled={actionLoading}
-                  className="px-5 py-2 text-sm font-medium bg-red-600 text-white rounded-md hover:bg-red-700 transition disabled:opacity-50"
-                >
-                  {actionLoading ? "Processing..." : "Reject"}
-                </button>
-
-                <button
-                  onClick={() => handleVerification("accepted")}
-                  disabled={actionLoading}
-                  className="px-5 py-2 text-sm font-medium bg-green-600 text-white rounded-md hover:bg-green-700 transition disabled:opacity-50"
-                >
-                  {actionLoading ? "Processing..." : "Verify"}
-                </button>
+                {!showRejectReasonInput ? (
+                  <>
+                    <button
+                      onClick={() => setShowRejectReasonInput(true)}
+                      disabled={actionLoading}
+                      className="px-5 py-2 text-sm font-medium bg-red-600 text-white rounded-md hover:bg-red-700 transition disabled:opacity-50"
+                    >
+                      Reject
+                    </button>
+                    <button
+                      onClick={() => handleVerification("accepted")}
+                      disabled={actionLoading}
+                      className="px-5 py-2 text-sm font-medium bg-green-600 text-white rounded-md hover:bg-green-700 transition disabled:opacity-50"
+                    >
+                      {actionLoading ? "Processing..." : "Verify"}
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-4 w-full">
+                    <textarea
+                      value={rejectionReason}
+                      onChange={(e) => setRejectionReason(e.target.value)}
+                      placeholder="Enter rejection reason..."
+                      className="p-2 border rounded-md text-sm"
+                      rows={3}
+                    />
+                    <div className="flex justify-end gap-4">
+                      <button
+                        onClick={() => {
+                          setShowRejectReasonInput(false);
+                          setRejectionReason("");
+                        }}
+                        className="px-4 py-2 text-sm font-medium bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleVerification("rejected", rejectionReason)
+                        }
+                        disabled={actionLoading || !rejectionReason.trim()}
+                        className="px-5 py-2 text-sm font-medium bg-red-600 text-white rounded-md hover:bg-red-700 transition disabled:opacity-50"
+                      >
+                        {actionLoading ? "Processing..." : "Confirm Rejection"}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

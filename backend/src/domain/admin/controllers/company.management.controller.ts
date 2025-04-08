@@ -42,7 +42,7 @@ export class CompanyController {
   verifyCompany: RequestHandler = async (req, res): Promise<void> => {
     try {
       const { companyId } = req.params;
-      const { status } = req.body; // 'accepted' | 'rejected'
+      const { status, rejectionReason } = req.body; // 'accepted' | 'rejected'
 
       if (!["accepted", "rejected"].includes(status)) {
         res
@@ -89,6 +89,7 @@ export class CompanyController {
         html = `
           <h2>Dear ${companyName},</h2>
           <p>❌ We regret to inform you that your company verification has been <strong>rejected</strong>.</p>
+          <p><strong>Reason:</strong> ${rejectionReason}</p>
           <p>You can do the same process again with proper documents and data.</p>
           <br/>
           <p>Regards,<br/>Brix Team</p>
