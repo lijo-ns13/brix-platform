@@ -2,6 +2,7 @@ import { useState } from "react";
 import BaseModal from "../../modals/BaseModal";
 import { addEducation } from "../../../services/ProfileService";
 import { useAppSelector } from "../../../../../hooks/useAppSelector";
+import toast from "react-hot-toast";
 
 interface AddEducationModalProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ export default function AddEducationModal({
     e.preventDefault();
     try {
       await addEducation(id, formData);
+      toast.success("Add education successfully");
       onEducationAdded(); // Again, consider renaming for clarity
       onClose();
       setFormData({
@@ -49,6 +51,7 @@ export default function AddEducationModal({
         description: "",
       });
     } catch (error) {
+      toast.error("failed to add education");
       console.error("Failed to submit form:", error);
     }
   };

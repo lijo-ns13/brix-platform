@@ -2,6 +2,7 @@ import { useState } from "react";
 import BaseModal from "../../modals/BaseModal";
 import { addProject } from "../../../services/ProfileService";
 import { useAppSelector } from "../../../../../hooks/useAppSelector";
+import toast from "react-hot-toast";
 
 interface AddProjectModalProps {
   isOpen: boolean;
@@ -64,6 +65,7 @@ export default function AddProjectModal({
     e.preventDefault();
     try {
       await addProject(id, formData);
+      toast.success("Add new project successfully");
       onProjectAdded();
       onClose();
       setFormData({
@@ -75,6 +77,7 @@ export default function AddProjectModal({
         technologies: [],
       });
     } catch (error) {
+      toast.error("failed to add project");
       console.error("Failed to submit form:", error);
     }
   };

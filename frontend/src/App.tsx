@@ -4,7 +4,7 @@ import CompanyRoutes from "./routes/CompanyRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LockedDashboard from "./features/company/pages/LockedDashboard";
-
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <BrowserRouter>
@@ -18,6 +18,7 @@ function App() {
         <Route path="/locked-dashboard" element={<LockedDashboard />} />
         <Route path="*" element={<h1>not found</h1>} />
       </Routes>
+      <Toaster position="top-right" />
     </BrowserRouter>
   );
 }

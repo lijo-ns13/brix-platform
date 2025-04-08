@@ -7,6 +7,7 @@ import { addCertificate } from "../../../services/ProfileService";
 import { useAppSelector } from "../../../../../hooks/useAppSelector";
 import { CropIcon, Upload, X } from "lucide-react";
 import BigModal from "../../modals/BigModal";
+import toast from "react-hot-toast";
 interface AddCertificateModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -128,6 +129,7 @@ export default function AddCertificateModal({
     e.preventDefault();
     try {
       await addCertificate(id, formData);
+      toast.success("new certificate added")
       onCertificateAdded();
       onClose();
       setFormData({
@@ -140,6 +142,7 @@ export default function AddCertificateModal({
         description: "",
       });
     } catch (error) {
+      toast.error("failed to add certificate")
       console.error("Failed to submit form:", error);
     }
   };

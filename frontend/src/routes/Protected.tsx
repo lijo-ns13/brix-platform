@@ -28,15 +28,18 @@ const Protected = ({
     return <Navigate to={redirectPath} />;
   }
   if (role == "company" && !isVerified) {
+    toast.error("User is not verified");
     dispatch(logout());
     return <Navigate to={"/locked-dashboard"} />;
   }
   if (!isAuthenticated) {
+    toast.error("user is not login");
     dispatch(logout());
     return <Navigate to={redirectPath} />;
   }
   // If the user's role does not match the required role, redirect to the specified path
   if (role !== SpecificRole) {
+    toast.error("you trying to access other role");
     dispatch(logout());
     return <Navigate to={redirectPath} />;
   }

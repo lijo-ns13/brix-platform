@@ -2,6 +2,7 @@ import { useState } from "react";
 import BaseModal from "../../modals/BaseModal";
 import { addExperience } from "../../../services/ProfileService";
 import { useAppSelector } from "../../../../../hooks/useAppSelector";
+import toast from "react-hot-toast";
 
 interface AddExperienceModalProps {
   isOpen: boolean;
@@ -36,6 +37,7 @@ export default function AddExperienceModal({
     e.preventDefault();
     try {
       await addExperience(id, formData);
+      toast.success("Add experience successfully");
       onExperienceAdded();
       onClose();
       setFormData({
@@ -47,6 +49,7 @@ export default function AddExperienceModal({
         description: "",
       });
     } catch (error) {
+      toast.error("failed to add experience");
       console.error("Failed to submit form:", error);
     }
   };

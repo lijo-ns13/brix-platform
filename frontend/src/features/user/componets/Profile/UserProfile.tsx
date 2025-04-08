@@ -8,6 +8,7 @@ import {
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 const ProfileImage = React.lazy(() => import("./ProfileImage"));
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
+import toast from "react-hot-toast";
 function UserProfile() {
   const dispatch = useAppDispatch();
   const { id: userId } = useAppSelector((state) => state.auth);
@@ -67,13 +68,17 @@ function UserProfile() {
       if (res) {
         setUserData(updatingUserData);
         setIsEditModalOpen(false);
-        dispatch(updateSlice({
-          name:userData.name,
-          headline:userData.headline
-        }));
+        dispatch(
+          updateSlice({
+            name: userData.name,
+            headline: userData.headline,
+          })
+        );
       }
+      toast.success("Profile updated successfully");
       console.log("resprofle", res);
     } catch (error) {
+      toast.error("Profile updated failed");
       console.error("Failed to update profile:", error);
       setError("Failed to update profile. Please try again.");
     } finally {

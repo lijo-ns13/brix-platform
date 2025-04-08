@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { JobService } from "../services/jobServices";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ConfirmSoftDeleteModal from "../../user/componets/modals/ConfirmSoftDeleteModal";
 import {
   BriefcaseIcon,
   CalendarIcon,
@@ -11,9 +13,15 @@ import {
   ChartBarIcon,
 } from "@heroicons/react/24/outline";
 import Spinner from "../components/Spinner"; // Assume you have a Spinner component
+import UpdateJobForm from "../components/Job/UpdateJobForm";
+import BigModal from "../../user/componets/modals/BigModal";
+import toast from "react-hot-toast";
 
 function JobDetailedPage() {
+  const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { jobId } = useParams<{ jobId: string }>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [job, setJob] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +31,22 @@ function JobDetailedPage() {
       fetchJob(jobId);
     }
   }, [jobId]);
+  const handleEdit = () => {
+    setIsModalOpen(true);
+  };
+  const handleDelete = async (jobId: string) => {
+    if (!jobId) {
+      toast.error("job id not found");
+    }
 
+    try {
+      await JobService.deleteJob(jobId);
+      toast.success("job deleted successfully");
+      navigate("/company/manage-jobs");
+    } catch (error) {
+      toast.error("error occured while deleting");
+    }
+  };
   async function fetchJob(jobId: string) {
     try {
       const data = await JobService.getJob(jobId);
@@ -86,7 +109,23 @@ function JobDetailedPage() {
                     View Candidates
                   </button>
                 </Link>
-                <button className="btn btn-outline gap-2">
+
+                <BigModal
+                  isOpen={isModalOpen}
+                  onClose={() => {
+                    setIsModalOpen(false);
+                  }}
+                  title={"Update Job"}
+                >
+                  <UpdateJobForm
+                    jobId={jobId || undefined}
+                    onSuccess={() => setIsModalOpen(false)}
+                  />
+                </BigModal>
+                <button
+                  className="btn btn-outline gap-2"
+                  onClick={() => handleEdit()}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -97,7 +136,10 @@ function JobDetailedPage() {
                   </svg>
                   Edit
                 </button>
-                <button className="btn btn-error gap-2">
+                <button
+                  className="btn btn-error gap-2"
+                  onClick={() => setShowDeleteModal(true)}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -115,7 +157,17 @@ function JobDetailedPage() {
               </div>
             </div>
           </div>
-
+          <ConfirmSoftDeleteModal
+            isOpen={showDeleteModal}
+            onConfirm={() => {
+              setShowDeleteModal(false);
+              handleDelete(jobId!);
+            }}
+            onCancel={() => setShowDeleteModal(false)}
+            itemType="job"
+            itemName={title}
+            extraMessage="Are you sure"
+          />
           {/* Main Content */}
           <div className="px-6 py-8">
             {/* Job Details Grid */}

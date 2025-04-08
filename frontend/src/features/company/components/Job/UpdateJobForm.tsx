@@ -1,13 +1,14 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useEffect } from "react";
 import clsx from "clsx";
-import { createJobSchema, CreateJobInput } from "../../util/jobValidtors";
+import { createJobSchema } from "../../util/jobValidtors";
 import { JobService } from "../../services/jobServices";
 import toast from "react-hot-toast";
-
+import { useNavigate } from "react-router-dom";
 interface Props {
+  jobId?: string;
   onSuccess?: () => void;
 }
-// Move these outside CreateJobForm
+
 const FormSection = ({
   title,
   children,
@@ -40,7 +41,9 @@ const FormField = ({
     {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
   </div>
 );
-const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
+
+const UpdateJobForm: React.FC<Props> = ({ jobId, onSuccess }) => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [jobType, setJobType] = useState("");
@@ -58,6 +61,44 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
   const [benefits, setBenefits] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (jobId) {
+      const loadJobData = async () => {
+        try {
+          setIsLoading(true);
+          const { success, job } = await JobService.getJob(jobId);
+          if (!success) {
+            toast.error("error occured");
+          }
+          console.log("current job", job);
+          setTitle(job.title);
+          setLocation(job.location);
+          setJobType(job.jobType);
+          setEmploymentType(job.employmentType);
+          setDescription(job.description);
+          setSkillsRequired(
+            job.skillsRequired.map((skill: any) => skill.title).join(",")
+          );
+          setExperienceLevel(job.experienceLevel);
+          setApplicationDeadline(job.applicationDeadline.split("T")[0]);
+          setSalary({
+            currency: job.salary.currency,
+            min: job.salary.min.toString(),
+            max: job.salary.max.toString(),
+            isVisibleToApplicants: job.salary.isVisibleToApplicants,
+          });
+          setBenefits(job.benefits.join(", "));
+        } catch (error) {
+          toast.error("Failed to load job data");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      loadJobData();
+    }
+  }, [jobId]);
 
   const handleSalaryChange = (
     field: keyof typeof salary,
@@ -67,7 +108,6 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    console.log("clikced");
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -86,65 +126,38 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
       },
       benefits: benefits.split(",").map((benefit) => benefit.trim()),
       experienceLevel,
-      applicationDeadline: applicationDeadline,
+      applicationDeadline,
     };
-    console.log("formData", formData);
+
     try {
       const validationResult = createJobSchema.safeParse(formData);
-      console.log("validationResult", validationResult);
       if (!validationResult.success) {
         const newErrors = validationResult.error.errors.reduce((acc, curr) => {
           const key = curr.path.join(".");
           acc[key] = curr.message;
           return acc;
         }, {} as Record<string, string>);
-
         setErrors(newErrors);
         return;
       }
 
-      await JobService.createJob(formData);
-      toast.success("Job created successfully!");
+      if (jobId) {
+        await JobService.updateJob(jobId, formData);
+        toast.success("Job updated successfully!");
+        navigate("/company/manage-jobs");
+      } else {
+        await JobService.createJob(formData);
+        toast.success("Job created successfully!");
+      }
       onSuccess?.();
     } catch (error) {
-      toast.error("Failed to create job. Please try again.");
+      toast.error(
+        `Failed to ${jobId ? "update" : "create"} job. Please try again.`
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  // const FormSection = ({
-  //   title,
-  //   children,
-  // }: {
-  //   title: string;
-  //   children: React.ReactNode;
-  // }) => (
-  //   <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
-  //     <h2 className="text-lg font-semibold text-gray-800 mb-4">{title}</h2>
-  //     <div className="space-y-4">{children}</div>
-  //   </div>
-  // );
-
-  // const FormField = ({
-  //   label,
-  //   required = true,
-  //   children,
-  //   error,
-  // }: {
-  //   label: string;
-  //   required?: boolean;
-  //   children: React.ReactNode;
-  //   error?: string;
-  // }) => (
-  //   <div className="space-y-1">
-  //     <label className="block text-sm font-medium text-gray-700">
-  //       {label} {required && <span className="text-red-500">*</span>}
-  //     </label>
-  //     {children}
-  //     {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-  //   </div>
-  // );
 
   const inputClasses = (hasError: boolean) =>
     clsx(
@@ -154,12 +167,24 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
         : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
     );
 
+  if (isLoading) {
+    return (
+      <div className="text-center p-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading job data...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100">
       <div className="p-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl">
-        <h1 className="text-2xl font-bold">Create Job Posting</h1>
+        <h1 className="text-2xl font-bold">
+          {jobId ? "Update" : "Create"} Job Posting
+        </h1>
         <p className="mt-1 text-blue-100">
-          Fill in the details to create a new job opportunity
+          {jobId ? "Update the details" : "Fill in the details"} to{" "}
+          {jobId ? "modify" : "create"} a job opportunity
         </p>
       </div>
 
@@ -196,6 +221,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
                 <option value="on-site">On-site</option>
               </select>
             </FormField>
+
             <FormField label="Experience Level" error={errors.experienceLevel}>
               <select
                 value={experienceLevel}
@@ -209,6 +235,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
                 <option value="lead">Lead</option>
               </select>
             </FormField>
+
             <FormField label="Employment Type" error={errors.employmentType}>
               <select
                 value={employmentType}
@@ -223,6 +250,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
                 <option value="internship">Internship</option>
               </select>
             </FormField>
+
             <FormField
               label="Application Deadline"
               error={errors.applicationDeadline}
@@ -232,7 +260,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
                 value={applicationDeadline}
                 onChange={(e) => setApplicationDeadline(e.target.value)}
                 className={inputClasses(!!errors.applicationDeadline)}
-                min={new Date().toISOString().split("T")[0]} // Set min date to today
+                min={new Date().toISOString().split("T")[0]}
               />
             </FormField>
           </div>
@@ -257,8 +285,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
               className={inputClasses(!!errors.skillsRequired)}
             />
             <p className="text-xs text-gray-500 mt-1">
-              Separate skills with commas. Example:{" "}
-              <span className="italic">React, TypeScript, Node.js</span>
+              Separate skills with commas
             </p>
           </FormField>
         </FormSection>
@@ -273,7 +300,6 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
                     onChange={(e) =>
                       handleSalaryChange("currency", e.target.value)
                     }
-                    placeholder="USD"
                     className={clsx(
                       inputClasses(!!errors["salary.currency"]),
                       "w-20"
@@ -326,10 +352,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
                 className={inputClasses(!!errors.benefits)}
               />
               <p className="text-xs text-gray-500 mt-1">
-                Separate benefits with commas. Example:{" "}
-                <span className="italic">
-                  Health insurance, 401k, Paid Time Off
-                </span>
+                Separate benefits with commas
               </p>
             </FormField>
           </div>
@@ -339,7 +362,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
           <button
             type="button"
             className="px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
-            onClick={() => window.history.back()}
+            onClick={onSuccess}
           >
             Cancel
           </button>
@@ -370,7 +393,13 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
                 />
               </svg>
             )}
-            {isSubmitting ? "Submitting..." : "Create Job"}
+            {isSubmitting
+              ? jobId
+                ? "Updating..."
+                : "Creating..."
+              : jobId
+              ? "Update Job"
+              : "Create Job"}
           </button>
         </div>
       </form>
@@ -378,4 +407,4 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
   );
 };
 
-export default CreateJobForm;
+export default UpdateJobForm;

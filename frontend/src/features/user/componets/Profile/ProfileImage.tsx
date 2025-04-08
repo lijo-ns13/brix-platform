@@ -8,10 +8,12 @@ import {
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 import BaseModal from "../modals/BaseModal";
 import { uploadToCloudinary } from "../../../company/services/cloudinaryService";
-import ReactCrop from "react-image-crop";
+import ReactCrop, { Crop as ReactCropType } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { Crop, X } from "lucide-react"; // Import icons from your icon library
+import { Crop, X } from "lucide-react";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
+import toast from "react-hot-toast";
+
 function ProfileImage() {
   const dispatch = useAppDispatch();
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
@@ -19,15 +21,19 @@ function ProfileImage() {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [srcImage, setSrcImage] = useState<string | null>(null);
   const [isCropping, setIsCropping] = useState<boolean>(false);
-  const [crop, setCrop] = useState({
+  const [crop, setCrop] = useState<ReactCropType>({
     unit: "%",
-    width: 100,
-    height: 100, // Add height
-    x: 0, // Add x
-    y: 0, // Add y
+    width: 30,
+    height: 30,
+    x: 0,
+    y: 0,
     aspect: 1,
   });
+  const [completedCrop, setCompletedCrop] = useState<ReactCropType | null>(
+    null
+  );
   const imageRef = useRef<HTMLImageElement>(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { id } = useAppSelector((state) => state.auth);
 
@@ -37,11 +43,16 @@ function ProfileImage() {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (completedCrop && imageRef.current && previewCanvasRef.current) {
+      generateCroppedImage();
+    }
+  }, [completedCrop]);
+
   async function fetchUserData(id: string) {
     try {
       const res = await getUserProfile(id);
       setProfilePicture(res.profilePicture);
-      console.log("resprofiel", res);
     } catch (error) {
       console.error("Failed to fetch user profile:", error);
     }
@@ -59,40 +70,56 @@ function ProfileImage() {
     reader.readAsDataURL(file);
   };
 
-  const handleCropComplete = async () => {
-    if (!imageRef.current || !crop.width || !crop.height) return;
+  const generateCroppedImage = () => {
+    if (!completedCrop || !imageRef.current || !previewCanvasRef.current) {
+      return;
+    }
 
-    const canvas = document.createElement("canvas");
-    const scaleX = imageRef.current.naturalWidth / imageRef.current.width;
-    const scaleY = imageRef.current.naturalHeight / imageRef.current.height;
+    const canvas = previewCanvasRef.current;
+    const image = imageRef.current;
+    const crop = completedCrop;
 
-    canvas.width = crop.width * scaleX;
-    canvas.height = crop.height * scaleY;
-
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const pixelRatio = window.devicePixelRatio;
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = "high";
+
     ctx.drawImage(
-      imageRef.current,
+      image,
       crop.x * scaleX,
       crop.y * scaleY,
       crop.width * scaleX,
       crop.height * scaleY,
       0,
       0,
-      crop.width * scaleX,
-      crop.height * scaleY
+      crop.width,
+      crop.height
     );
+  };
 
-    canvas.toBlob(
-      async (blob) => {
-        if (!blob || !id) return;
-        setIsUploading(true);
-        try {
+  const handleCropComplete = async (crop: ReactCropType) => {
+    setCompletedCrop(crop);
+  };
+
+  const handleApplyCrop = async () => {
+    if (!completedCrop || !previewCanvasRef.current || !id) return;
+
+    setIsUploading(true);
+    try {
+      previewCanvasRef.current.toBlob(
+        async (blob) => {
+          if (!blob) return;
+
           const url = await uploadToCloudinary(blob);
-          console.log("url", url);
           const res = await updateProfileImage(id, url);
-          console.log("ressing", res);
+
           if (res) {
             dispatch(
               updateSlice({
@@ -100,19 +127,21 @@ function ProfileImage() {
               })
             );
           }
+          toast.success("Profile Image updated");
           setProfilePicture(url);
           setIsCropping(false);
           setSrcImage(null);
           setIsImageModalOpen(false);
-        } catch (error) {
-          console.error("Image upload failed:", error);
-        } finally {
-          setIsUploading(false);
-        }
-      },
-      "image/jpeg",
-      0.9
-    );
+        },
+        "image/jpeg",
+        0.9
+      );
+    } catch (error) {
+      toast.error("Profile Image failed");
+      console.error("Image upload failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleDeleteImage = async () => {
@@ -186,6 +215,7 @@ function ProfileImage() {
               <ReactCrop
                 crop={crop}
                 onChange={(c) => setCrop(c)}
+                onComplete={handleCropComplete}
                 aspect={1}
                 circularCrop
               >
@@ -196,6 +226,15 @@ function ProfileImage() {
                   className="max-w-full max-h-64"
                 />
               </ReactCrop>
+
+              {/* Hidden canvas for generating the cropped image */}
+              <canvas
+                ref={previewCanvasRef}
+                style={{
+                  display: "none",
+                  objectFit: "contain",
+                }}
+              />
 
               <div className="flex justify-end mt-2 space-x-2">
                 <button
@@ -210,7 +249,7 @@ function ProfileImage() {
                 </button>
                 <button
                   type="button"
-                  onClick={handleCropComplete}
+                  onClick={handleApplyCrop}
                   disabled={isUploading}
                   className="bg-green-500 text-white px-3 py-1 rounded text-sm disabled:bg-green-300"
                 >

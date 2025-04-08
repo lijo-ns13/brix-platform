@@ -76,23 +76,55 @@ export class JobController {
     try {
       const companyId = (req.user as Userr)?.id;
       if (!companyId) {
-        res.status(400).json({ message: "no company id" });
+        res.status(400).json({ message: "No company id provided" });
         return;
       }
+
       const jobId = req.params.jobId;
-      const validatedData = updateJobSchema.parse(req.body);
+
+      const skillsId: string[] = [];
+      const skills = req.body.skillsRequired;
+      for (const skill of skills) {
+        const skillIn = await skillModel.findOne({ title: skill });
+        if (!skillIn) {
+          const newSkill = new skillModel({ title: skill });
+          await newSkill.save();
+          skillsId.push(newSkill._id.toString());
+        } else {
+          skillsId.push(skillIn._id.toString());
+        }
+      }
+
+      const jobData = {
+        ...req.body,
+        skillsRequired: skillsId,
+      };
+
+      const validatedData = updateJobSchema.parse(jobData);
       const updatedJob = await this.jobService.updateJob(
         jobId,
         companyId,
         validatedData
       );
+
       if (!updatedJob) {
         res.status(404).json({ message: "Job not found or unauthorized" });
         return;
       }
+
       res.status(200).json({ message: "Job updated successfully", updatedJob });
     } catch (err: any) {
-      res.status(400).json({ error: err.message });
+      if (err instanceof ZodError) {
+        const errObj: Record<string, string> = {};
+        err.errors.forEach((err) => {
+          errObj[err.path.join(".")] = err.message;
+        });
+        res
+          .status(HTTP_STATUS_CODES.BAD_REQUEST)
+          .json({ success: false, errors: errObj });
+      } else {
+        res.status(400).json({ success: false, error: err.message });
+      }
     }
   };
 
