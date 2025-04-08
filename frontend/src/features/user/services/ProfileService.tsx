@@ -16,7 +16,7 @@ export const updateUserProfile = async (userId: string, data: any) => {
 };
 
 export const updateProfileImage = async (userId: string, imageUrl: string) => {
-  const response = await userAxios.patch(
+  const response = await userAxios.put(
     `${API_BASE_URL}/${userId}/profile-image`,
     { imageUrl },
     { withCredentials: true }

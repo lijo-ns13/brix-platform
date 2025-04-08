@@ -83,4 +83,7 @@ userProfileRouter.get("/:userId/projects", (req, res) =>
 userProfileRouter.get("/:userId/certificates", (req, res) =>
   userProfileController.getAllCertificates(req, res)
 );
+userProfileRouter.post("/change-password", (req, res) =>
+  userProfileController.changePassword(req, res)
+);
 export default userProfileRouter;

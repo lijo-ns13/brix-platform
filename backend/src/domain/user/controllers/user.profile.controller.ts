@@ -5,6 +5,11 @@ import { IUserExperience } from "../../../shared/models/user.experience.model";
 import { IUserProject } from "../../../shared/models/user.project.model";
 import { IUserCertificate } from "../../../shared/models/user.certificate.model";
 import { UserProfileService } from "../services/user.profile.service";
+interface User {
+  id: string;
+  email: string;
+  role: string;
+}
 export class UserProfileController {
   constructor(private userProfileService: UserProfileService) {}
 
@@ -230,6 +235,20 @@ export class UserProfileController {
         req.params.userId
       );
       res.json(certificates);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+  async changePassword(req: Request, res: Response) {
+    try {
+      const { currentPassword, newPassword, confirmPassword } = req.body;
+      await this.userProfileService.changePassword(
+        (req.user as User)?.id,
+        currentPassword,
+        newPassword,
+        confirmPassword
+      );
+      res.status(200).json({ message: "Password updated successfully" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

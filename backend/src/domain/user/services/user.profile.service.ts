@@ -175,4 +175,19 @@ export class UserProfileService {
   async getAllCertificates(userId: string): Promise<IUserCertificate[]> {
     return await this.userRepository.getAllCertificates(userId);
   }
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ): Promise<void> {
+    if (newPassword !== confirmPassword) {
+      throw new Error("New password and confirm password must match");
+    }
+    await this.userRepository.changePassword(
+      userId,
+      currentPassword,
+      newPassword
+    );
+  }
 }

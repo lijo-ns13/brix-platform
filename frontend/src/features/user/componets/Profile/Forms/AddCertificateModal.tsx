@@ -6,6 +6,7 @@ import "react-image-crop/dist/ReactCrop.css";
 import { addCertificate } from "../../../services/ProfileService";
 import { useAppSelector } from "../../../../../hooks/useAppSelector";
 import { CropIcon, Upload, X } from "lucide-react";
+import BigModal from "../../modals/BigModal";
 interface AddCertificateModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -144,7 +145,7 @@ export default function AddCertificateModal({
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose} title="Add Certificate">
+    <BigModal isOpen={isOpen} onClose={onClose} title="Add Certificate">
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
           type="text"
@@ -318,6 +319,6 @@ export default function AddCertificateModal({
           Add Certificate
         </button>
       </form>
-    </BaseModal>
+    </BigModal>
   );
 }

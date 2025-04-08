@@ -54,7 +54,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
       },
       benefits: benefits.split(",").map((benefit) => benefit.trim()),
       experienceLevel,
-      applicationDeadline: "10-02-2002",
+      applicationDeadline: applicationDeadline,
     };
     console.log("formData", formData);
     try {
@@ -66,6 +66,7 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
           acc[key] = curr.message;
           return acc;
         }, {} as Record<string, string>);
+
         setErrors(newErrors);
         return;
       }
@@ -189,6 +190,18 @@ const CreateJobForm: React.FC<Props> = ({ onSuccess }) => {
                 <option value="temporary">Temporary</option>
                 <option value="internship">Internship</option>
               </select>
+            </FormField>
+            <FormField
+              label="Application Deadline"
+              error={errors.applicationDeadline}
+            >
+              <input
+                type="date"
+                value={applicationDeadline}
+                onChange={(e) => setApplicationDeadline(e.target.value)}
+                className={inputClasses(!!errors.applicationDeadline)}
+                min={new Date().toISOString().split("T")[0]} // Set min date to today
+              />
             </FormField>
           </div>
         </FormSection>

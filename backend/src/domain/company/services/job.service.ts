@@ -46,4 +46,7 @@ export class JobService {
       limit
     );
   }
+  async getJob(jobId: string) {
+    return await this.jobRepository.getJob(jobId);
+  }
 }

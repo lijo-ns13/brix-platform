@@ -60,4 +60,9 @@ export interface IUserProfileRepository {
   getAllExperiences(userId: string): Promise<IUserExperience[]>;
   getAllProjects(userId: string): Promise<IUserProject[]>;
   getAllCertificates(userId: string): Promise<IUserCertificate[]>;
+  changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<boolean>;
 }

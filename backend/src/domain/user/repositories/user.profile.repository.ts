@@ -12,6 +12,7 @@ import userProjectModel, {
   IUserProject,
 } from "../../../shared/models/user.project.model";
 import { IUserProfileRepository } from "../interfaces/IUserProfile.Repository";
+import bcrypt from "bcrypt";
 
 export class UserProfileRepository implements IUserProfileRepository {
   //  Get User Profile
@@ -289,5 +290,20 @@ export class UserProfileRepository implements IUserProfileRepository {
   // Get all certificates for a user
   async getAllCertificates(userId: string): Promise<IUserCertificate[]> {
     return await userCertificateModel.find({ userId });
+  }
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<boolean> {
+    const user = await userModel.findById(userId);
+    if (!user) throw new Error("User not found");
+
+    const isMatch = await bcrypt.compare(newPassword, currentPassword);
+    if (!isMatch) throw new Error("Current password is incorrect");
+
+    user.password = newPassword;
+    await user.save();
+    return true;
   }
 }

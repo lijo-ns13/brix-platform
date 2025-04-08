@@ -3,10 +3,7 @@ import {
   CreateJobDto,
   UpdateJobDto,
 } from "../interfaces/IJobRepository";
-import JobModel, {
-  IJob,
-  JobApplication,
-} from "../../../shared/models/job.model";
+import JobModel, { IJob } from "../../../shared/models/job.model";
 import mongoose from "mongoose";
 
 export class JobRepository implements IJobRepository {
@@ -61,8 +58,9 @@ export class JobRepository implements IJobRepository {
     companyId: string,
     page: number,
     limit: number
-  ): Promise<{ applications: JobApplication[]; total: number } | null> {
+  ): Promise<{ applications: any[]; total: number } | null> {
     const skip = (page - 1) * limit;
+
     const result = await JobModel.aggregate([
       {
         $match: {
@@ -72,13 +70,65 @@ export class JobRepository implements IJobRepository {
       },
       {
         $project: {
-          applications: { $slice: ["$applications", skip, limit] },
-          total: { $size: "$applications" },
+          applications: 1,
+        },
+      },
+      {
+        $unwind: "$applications",
+      },
+      {
+        $sort: { "applications.appliedAt": -1 }, // optional: sort by latest
+      },
+      {
+        $facet: {
+          paginatedApplications: [
+            { $skip: skip },
+            { $limit: limit },
+            {
+              $lookup: {
+                from: "users",
+                localField: "applications.user",
+                foreignField: "_id",
+                as: "userData",
+              },
+            },
+            {
+              $unwind: "$userData",
+            },
+            {
+              $project: {
+                _id: "$applications._id",
+                resumeUrl: "$applications.resumeUrl",
+                status: "$applications.status",
+                statusHistory: "$applications.statusHistory",
+                appliedAt: "$applications.appliedAt",
+                user: "$userData",
+              },
+            },
+          ],
+          totalCount: [
+            {
+              $count: "total",
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          applications: "$paginatedApplications",
+          total: {
+            $ifNull: [{ $arrayElemAt: ["$totalCount.total", 0] }, 0],
+          },
         },
       },
     ]);
+
     return result.length > 0
       ? { applications: result[0].applications, total: result[0].total }
       : null;
+  }
+
+  async getJob(jobId: string) {
+    return await JobModel.findById(jobId).populate("skillsRequired");
   }
 }

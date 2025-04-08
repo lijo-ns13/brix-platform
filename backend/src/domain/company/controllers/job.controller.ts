@@ -45,7 +45,7 @@ export class JobController {
         benefits: req.body.benefits,
         experienceLevel: req.body.experienceLevel,
         applicationDeadline: req.body.applicationDeadline,
-        skillsRequired: skillsId,
+        skillsRequired: skillsId.map((id) => id.toString()),
         createdBy: companyId,
       };
       console.log("jobData", jobData);
@@ -186,6 +186,30 @@ export class JobController {
           totalPages: Math.ceil(result.total / limit),
         },
       });
+    } catch (err: any) {
+      res
+        .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+        .json({ success: false, error: err.message });
+    }
+  };
+  getJob: RequestHandler = async (req: Request, res: Response) => {
+    try {
+      const { jobId } = req.params;
+      console.log("jobId", jobId);
+      if (!jobId) {
+        res
+          .status(HTTP_STATUS_CODES.NOT_FOUND)
+          .json({ success: false, message: "Job not found" });
+        return;
+      }
+      const result = await this.jobService.getJob(jobId);
+      if (!result) {
+        res
+          .status(HTTP_STATUS_CODES.NOT_FOUND)
+          .json({ success: false, message: "job not found detailed" });
+        return;
+      }
+      res.status(HTTP_STATUS_CODES.OK).json({ success: true, job: result });
     } catch (err: any) {
       res
         .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)

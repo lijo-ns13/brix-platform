@@ -57,4 +57,5 @@ export interface IJobRepository {
     page: number,
     limit: number
   ): Promise<{ applications: JobApplication[]; total: number } | null>;
+  getJob(jobId: string): Promise<any>;
 }

@@ -1,9 +1,20 @@
-import UserProfile from "../componets/Profile/UserProfile";
-import AddSection from "../componets/Profile/AddSection";
-import ExperienceSection from "../componets/Profile/ExperienceSection";
-import ProjectSection from "../componets/Profile/ProjectSection";
-import CertificateSection from "../componets/Profile/CertificateSection";
-import EducationSection from "../componets/Profile/EducationSection";
+import React from "react";
+const UserProfile = React.lazy(
+  () => import("../componets/Profile/UserProfile")
+);
+const AddSection = React.lazy(() => import("../componets/Profile/AddSection"));
+const ExperienceSection = React.lazy(
+  () => import("../componets/Profile/ExperienceSection")
+);
+const ProjectSection = React.lazy(
+  () => import("../componets/Profile/ProjectSection")
+);
+const CertificateSection = React.lazy(
+  () => import("../componets/Profile/CertificateSection")
+);
+const EducationSection = React.lazy(
+  () => import("../componets/Profile/EducationSection")
+);
 import Navbar from "../componets/NavBar";
 function ProfilePage() {
   return (

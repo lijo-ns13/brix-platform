@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import BaseModal from "../modals/BaseModal";
 import {
   getUserProfile,
   updateUserProfile,
 } from "../../services/ProfileService";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
+const ProfileImage = React.lazy(() => import("./ProfileImage"));
 
 function UserProfile() {
   const { id: userId } = useAppSelector((state) => state.auth);
@@ -98,17 +99,7 @@ function UserProfile() {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 max-w-4xl mx-auto my-8">
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Profile Image with click to open modal */}
-        <div className="flex-shrink-0">
-          <div className="relative">
-            <img
-              src={userData.profilePicture || "/api/placeholder/150/150"}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border-4 border-gray-100 cursor-pointer hover:border-gray-200 transition"
-              onClick={() => setIsImageModalOpen(true)}
-            />
-          </div>
-        </div>
+        <ProfileImage />
 
         {/* Profile Details */}
         <div className="flex-grow">
