@@ -136,7 +136,7 @@ const Navbar: React.FC = () => {
                 <span className="text-white font-bold text-sm">MA</span>
               </div>
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-                MyApp
+                BRIX
               </span>
             </Link>
           </div>
