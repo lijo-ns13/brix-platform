@@ -28,8 +28,12 @@ userProfileRouter.delete("/:userId/profile-image", (req, res) =>
 userProfileRouter.post("/:userId/education", (req, res) =>
   userProfileController.addEducation(req, res)
 );
-userProfileRouter.patch("/:userId/education", (req, res) =>
-  userProfileController.editEducation(req, res)
+userProfileRouter.patch(
+  "/:userId/education/:educationId",
+  (
+    req,
+    res // Added educationId
+  ) => userProfileController.editEducation(req, res)
 );
 userProfileRouter.delete("/:userId/education/:educationId", (req, res) =>
   userProfileController.deleteEducation(req, res)

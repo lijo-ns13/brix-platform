@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AddEducationModal from "./Forms/AddEducationModal";
 import { getEducations, deleteEducation } from "../../services/ProfileService";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
+import EditEducationModal from "./Forms/EditEducationModal";
 
 interface Education {
   institutionName: string;
@@ -273,14 +274,27 @@ function EducationSection() {
           </div>
         )}
 
-        <AddEducationModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setEditEducation(null);
-          }}
-          onEducationAdded={handleEducationAdded}
-        />
+        {isModalOpen &&
+          (editEducation ? (
+            <EditEducationModal
+              isOpen={isModalOpen}
+              onClose={() => {
+                setIsModalOpen(false);
+                setEditEducation(null);
+              }}
+              education={editEducation}
+              onEducationUpdated={handleEducationAdded}
+            />
+          ) : (
+            <AddEducationModal
+              isOpen={isModalOpen}
+              onClose={() => {
+                setIsModalOpen(false);
+                setEditEducation(null);
+              }}
+              onEducationAdded={handleEducationAdded}
+            />
+          ))}
       </div>
     </div>
   );

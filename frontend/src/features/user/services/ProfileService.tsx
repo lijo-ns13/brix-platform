@@ -40,9 +40,13 @@ export const addEducation = async (userId: string, education: any) => {
   return response.data;
 };
 
-export const editEducation = async (educationId: string, data: any) => {
+export const editEducation = async (
+  userId: string,
+  educationId: string,
+  data: any
+) => {
   const response = await userAxios.patch(
-    `${API_BASE_URL}/education/${educationId}`,
+    `${API_BASE_URL}/${userId}/education/${educationId}`,
     data,
     { withCredentials: true }
   );
@@ -65,9 +69,13 @@ export const addExperience = async (userId: string, experience: any) => {
   return response.data;
 };
 
-export const editExperience = async (experienceId: string, data: any) => {
+export const editExperience = async (
+  userId: string,
+  experienceId: string,
+  data: any
+) => {
   const response = await userAxios.patch(
-    `${API_BASE_URL}/experience/${experienceId}`,
+    `${API_BASE_URL}/${userId}/experience/${experienceId}`,
     data,
     { withCredentials: true }
   );
@@ -94,9 +102,13 @@ export const addProject = async (userId: string, project: any) => {
   return response.data;
 };
 
-export const editProject = async (projectId: string, data: any) => {
+export const editProject = async (
+  userId: string,
+  projectId: string,
+  data: any
+) => {
   const response = await userAxios.patch(
-    `${API_BASE_URL}/project/${projectId}`,
+    `${API_BASE_URL}/${userId}/project/${projectId}`,
     data,
     { withCredentials: true }
   );
@@ -122,9 +134,13 @@ export const addCertificate = async (userId: string, certificate: any) => {
   return response.data;
 };
 
-export const editCertificate = async (certificateId: string, data: any) => {
+export const editCertificate = async (
+  userId: string,
+  certificateId: string,
+  data: any
+) => {
   const response = await userAxios.patch(
-    `${API_BASE_URL}/certificate/${certificateId}`,
+    `${API_BASE_URL}/${userId}/certificate/${certificateId}`,
     data,
     { withCredentials: true }
   );

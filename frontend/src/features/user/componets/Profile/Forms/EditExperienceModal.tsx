@@ -1,26 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BaseModal from "../../modals/BaseModal";
-import { addEducation } from "../../../services/ProfileService";
+import { editExperience } from "../../../services/ProfileService";
 import { useAppSelector } from "../../../../../hooks/useAppSelector";
 import toast from "react-hot-toast";
 
-interface AddEducationModalProps {
+interface EditExperienceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEducationAdded: () => void;
+  experience: any;
+  onExperienceUpdated: () => void;
 }
 
-export default function AddEducationModal({
+export default function EditExperienceModal({
   isOpen,
   onClose,
-  onEducationAdded,
-}: AddEducationModalProps) {
+  experience,
+  onExperienceUpdated,
+}: EditExperienceModalProps) {
   const { id } = useAppSelector((state) => state.auth);
   const [formData, setFormData] = useState({
-    institutionName: "",
-    degree: "",
-    fieldOfStudy: "",
-    grade: "",
+    title: "",
+    company: "",
+    location: "",
     startDate: "",
     endDate: "",
     description: "",
@@ -28,12 +29,24 @@ export default function AddEducationModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
+  useEffect(() => {
+    if (experience) {
+      setFormData({
+        title: experience.title,
+        company: experience.company,
+        location: experience.location,
+        startDate: experience.startDate.split("T")[0],
+        endDate: experience.endDate?.split("T")[0] || "",
+        description: experience.description,
+      });
+    }
+  }, [experience]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -49,36 +62,34 @@ export default function AddEducationModal({
 
   const validateField = (name: string, value: string) => {
     let error = "";
+    const today = new Date();
+
     switch (name) {
-      case "institutionName":
-        if (!value.trim()) error = "Institution name is required";
+      case "title":
+        if (!value.trim()) error = "Job title is required";
         else if (value.length < 2) error = "Must be at least 2 characters";
         break;
-      case "degree":
-        if (!value.trim()) error = "Degree is required";
+      case "company":
+        if (!value.trim()) error = "Company name is required";
         else if (value.length < 2) error = "Must be at least 2 characters";
         break;
-      case "fieldOfStudy":
-        if (!value.trim()) error = "Field of study is required";
-        else if (value.length < 2) error = "Must be at least 2 characters";
+      case "location":
+        if (value && value.length < 2) error = "Must be at least 2 characters";
         break;
       case "startDate":
         if (!value) error = "Start date is required";
-        else if (new Date(value) > new Date())
-          error = "Cannot be in the future";
+        else if (new Date(value) > today) error = "Cannot be in the future";
         break;
       case "endDate":
-        if (value && new Date(value) < new Date(formData.startDate)) {
-          error = "Must be after start date";
-        }
-        break;
-      case "grade":
-        if (value && !/^[A-Za-z0-9./% -]+$/.test(value)) {
-          error = "Invalid grade format";
+        if (value) {
+          const startDate = new Date(formData.startDate);
+          const endDate = new Date(value);
+          if (endDate < startDate) error = "Must be after start date";
+          if (endDate > today) error = "Cannot be in the future";
         }
         break;
       case "description":
-        if (value.length > 500) error = "Maximum 500 characters allowed";
+        if (value.length > 1000) error = "Maximum 1000 characters allowed";
         break;
     }
     setErrors((prev) => ({ ...prev, [name]: error }));
@@ -89,11 +100,9 @@ export default function AddEducationModal({
     const today = new Date();
 
     // Required fields
-    if (!formData.institutionName.trim())
-      newErrors.institutionName = "Institution name is required";
-    if (!formData.degree.trim()) newErrors.degree = "Degree is required";
-    if (!formData.fieldOfStudy.trim())
-      newErrors.fieldOfStudy = "Field of study is required";
+    if (!formData.title.trim()) newErrors.title = "Job title is required";
+    if (!formData.company.trim())
+      newErrors.company = "Company name is required";
     if (!formData.startDate) newErrors.startDate = "Start date is required";
 
     // Date validations
@@ -106,15 +115,17 @@ export default function AddEducationModal({
       const endDate = new Date(formData.endDate);
       const startDate = new Date(formData.startDate);
       if (endDate < startDate) newErrors.endDate = "Must be after start date";
+      if (endDate > today) newErrors.endDate = "Cannot be in the future";
     }
 
-    // Format validations
-    if (formData.grade && !/^[A-Za-z0-9./% -]+$/.test(formData.grade)) {
-      newErrors.grade = "Invalid grade format";
+    // Location validation
+    if (formData.location && formData.location.length < 2) {
+      newErrors.location = "Must be at least 2 characters";
     }
 
-    if (formData.description.length > 500) {
-      newErrors.description = "Maximum 500 characters allowed";
+    // Description validation
+    if (formData.description.length > 1000) {
+      newErrors.description = "Maximum 1000 characters allowed";
     }
 
     setErrors(newErrors);
@@ -123,91 +134,64 @@ export default function AddEducationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isValid = validateForm();
-    if (!isValid) return;
+    if (!validateForm()) return;
 
     try {
-      await addEducation(id, formData);
-      toast.success("Education added successfully");
-      onEducationAdded();
+      await editExperience(id, experience._id, formData);
+      toast.success("Experience updated successfully");
+      onExperienceUpdated();
       onClose();
-      setFormData({
-        institutionName: "",
-        degree: "",
-        fieldOfStudy: "",
-        grade: "",
-        startDate: "",
-        endDate: "",
-        description: "",
-      });
     } catch (error) {
-      toast.error("Failed to add education");
+      toast.error("Failed to update experience");
       console.error("Submission error:", error);
     }
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose} title="Add Education">
+    <BaseModal isOpen={isOpen} onClose={onClose} title="Edit Experience">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <input
             type="text"
-            name="institutionName"
-            placeholder="Institution Name"
-            value={formData.institutionName}
+            name="title"
+            placeholder="Job Title"
+            value={formData.title}
             onChange={handleChange}
             onBlur={handleBlur}
             className="w-full border px-3 py-2 rounded"
           />
-          {errors.institutionName && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.institutionName}
-            </p>
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
           )}
         </div>
 
         <div>
           <input
             type="text"
-            name="degree"
-            placeholder="Degree"
-            value={formData.degree}
+            name="company"
+            placeholder="Company Name"
+            value={formData.company}
             onChange={handleChange}
             onBlur={handleBlur}
             className="w-full border px-3 py-2 rounded"
           />
-          {errors.degree && (
-            <p className="text-red-500 text-sm mt-1">{errors.degree}</p>
+          {errors.company && (
+            <p className="text-red-500 text-sm mt-1">{errors.company}</p>
           )}
         </div>
 
         <div>
           <input
             type="text"
-            name="fieldOfStudy"
-            placeholder="Field of Study"
-            value={formData.fieldOfStudy}
+            name="location"
+            placeholder="Location"
+            value={formData.location}
             onChange={handleChange}
             onBlur={handleBlur}
             className="w-full border px-3 py-2 rounded"
           />
-          {errors.fieldOfStudy && (
-            <p className="text-red-500 text-sm mt-1">{errors.fieldOfStudy}</p>
-          )}
-        </div>
-
-        <div>
-          <input
-            type="text"
-            name="grade"
-            placeholder="Grade (optional)"
-            value={formData.grade}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            className="w-full border px-3 py-2 rounded"
-          />
-          {errors.grade && (
-            <p className="text-red-500 text-sm mt-1">{errors.grade}</p>
+          {errors.location && (
+            <p className="text-red-500 text-sm mt-1">{errors.location}</p>
           )}
         </div>
 
@@ -256,9 +240,9 @@ export default function AddEducationModal({
 
         <button
           type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700"
+          className="bg-indigo-600 text-white px-4 py-2 rounded w-full hover:bg-indigo-700"
         >
-          Add Education
+          Update Experience
         </button>
       </form>
     </BaseModal>

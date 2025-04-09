@@ -122,7 +122,7 @@ export class UserProfileController {
   async editExperience(req: Request, res: Response) {
     try {
       const updatedExperience = await this.userProfileService.editExperience(
-        req.params.experienceId,
+        req.params.experienceId, // Corrected to use experienceId from params
         req.body as Partial<IUserExperience>
       );
       res.status(HTTP_STATUS_CODES.OK).json(updatedExperience);

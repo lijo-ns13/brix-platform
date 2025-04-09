@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AddExperienceModal from "./Forms/AddExperienceModal";
 import { getExperience, deleteExperience } from "../../services/ProfileService";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
+import EditExperienceModal from "./Forms/EditExperienceModal";
 
 interface Experience {
   _id: string;
@@ -251,13 +252,25 @@ function ExperienceSection() {
         )}
 
         <AddExperienceModal
-          isOpen={isModalOpen}
+          isOpen={isModalOpen && !editExperience}
           onClose={() => {
             setIsModalOpen(false);
             setEditExperience(null);
           }}
           onExperienceAdded={handleExperienceAdded}
         />
+
+        {editExperience && (
+          <EditExperienceModal
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false);
+              setEditExperience(null);
+            }}
+            experience={editExperience}
+            onExperienceUpdated={handleExperienceAdded}
+          />
+        )}
       </div>
     </div>
   );
