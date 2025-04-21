@@ -43,7 +43,7 @@ export const signUpCompany = async (
     return { success };
   } catch (error: any) {
     const message =
-      error.response?.data?.message ||
+      error.response?.data?.error ||
       "An error occurred during company signupy.";
     console.error("Signup error:", message);
     throw new Error(message);

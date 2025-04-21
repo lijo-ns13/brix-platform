@@ -106,9 +106,7 @@ function SignUp() {
       navigate(`/company/verify?email=${formData.email}`);
     } catch (error: any) {
       console.log("errors in signup", error);
-      setServerError(
-        error?.response?.data?.message || "An unexpected error occurred."
-      );
+      setServerError(error.Error || "An unexpected error occurred.");
       return;
     } finally {
       setLoading(false);
@@ -119,7 +117,7 @@ function SignUp() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-6 text-center">
-          Company Signup{serverError && <p>serverError</p>}
+          Company Signup{serverError && <p>{serverError}</p>}
         </h1>
         <p className="mt-2 text-sm text-gray-600">
           Or{" "}

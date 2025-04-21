@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { resendOTP, verifyCompanyByOTP } from "../services/AuthServices";
+import toast from "react-hot-toast";
 function VerifyEmail() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ function VerifyEmail() {
   // Countdown Timer - runs once on mount
   useEffect(() => {
     if (!email) {
-      alert("Email missing. Redirecting...");
+      toast.error("Email missing. Redirecting...");
+
       navigate("/signup");
       return;
     }
@@ -46,7 +48,7 @@ function VerifyEmail() {
     event.preventDefault();
 
     if (!otp) {
-      alert("Please enter OTP");
+      toast.error("Please enter OTP");
       return;
     }
 
@@ -54,11 +56,12 @@ function VerifyEmail() {
       setIsVerifying(true);
       const res = await verifyCompanyByOTP(email!, otp);
       console.log("Verification success:", res);
-      alert("Email verified successfully!");
+
+      toast.success("Email verified successfully!");
       navigate("/company/signin");
     } catch (error: any) {
       console.error("Verification failed:", error);
-      alert(error?.response?.data?.message || "Failed to verify OTP");
+      toast.error(error?.response?.data?.message || "Failed to verify OTP");
     } finally {
       setIsVerifying(false);
     }
@@ -67,7 +70,7 @@ function VerifyEmail() {
   // Resend OTP Handler
   async function handleResend() {
     if (!email) {
-      alert("Missing email!");
+      toast.error("email missing!");
       return;
     }
 
@@ -79,7 +82,7 @@ function VerifyEmail() {
       setIsResendAllowed(false);
     } catch (error: any) {
       console.error("Failed to resend OTP:", error);
-      alert(error?.response?.data?.message || "Failed to resend OTP");
+      toast.error(error?.response?.data?.message || "Failed to resend OTP");
     } finally {
       setIsResending(false);
     }
